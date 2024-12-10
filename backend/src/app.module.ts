@@ -20,6 +20,9 @@ import { User } from './users/entities/user.entity';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       entities: [User],
+      migrations: [
+        /*...*/
+      ],
       synchronize: true, // Not for production
       autoLoadEntities: true,
     }),
