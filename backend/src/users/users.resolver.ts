@@ -8,15 +8,15 @@ import { UpdateUserInput } from './dto/update-user.input';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
+  @Query((returns) => [User])
+  users(): Promise<User[]> {
+    return this.usersService.findAll();
+  }
+
   @Mutation((returns) => User)
   createUser(
     @Args('createUserInput') createUserInput: CreateUserInput,
   ): Promise<User> {
     return this.usersService.createUser(createUserInput);
   }
-
-  // @Query(() => [User], { name: 'users' })
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
 }
