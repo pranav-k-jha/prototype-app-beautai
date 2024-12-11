@@ -7,11 +7,14 @@ export class User {
   user_id: number;
 
   @Column()
+  @Field()
   name: string;
 
   @Column()
+  @Field()
   email: string;
 
   @Column()
+  @Field({ nullable: true })
   address: string;
 }
