@@ -1,15 +1,9 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import {
-  IsAlpha,
-  IsEmail,
-  IsOptional,
-  IsStrongPassword,
-} from 'class-validator';
+import { IsAlpha, IsEmail, IsOptional } from 'class-validator';
 
 @InputType()
 export class CreateUserInput {
   @Field()
-  @IsAlpha()
   name: string;
 
   @Field()
