@@ -13,6 +13,7 @@ export class UsersService {
 
   async createUser(createUserInput: CreateUserInput): Promise<User> {
     const newUser = this.userRepository.create(createUserInput);
+    console.log(this.createUser);
     return this.userRepository.save(newUser);
   }
 

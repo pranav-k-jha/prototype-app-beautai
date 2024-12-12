@@ -7,8 +7,9 @@ export class CreateUserInput {
   name: string;
 
   @Field()
-  @IsEmail()
-  email: string;
+  @IsOptional()
+  // @IsEmail()
+  email?: string;
 
   @Field()
   password: string;

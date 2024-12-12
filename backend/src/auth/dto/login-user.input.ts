@@ -7,4 +7,10 @@ export class LoginUserInput {
 
   @Field()
   password: string;
+
+  @Field()
+  email?: string;
+
+  @Field()
+  address?: string;
 }
