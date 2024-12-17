@@ -1,0 +1,92 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Business {
+  provider_id: Int!
+  provider_name: String!
+  rating: Float
+  total_reviews: Int
+  opening_time: String
+  closing_time: String
+  address: String
+  city: String
+  country: String
+  distance_km: Float
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type User {
+  user_id: Int!
+  name: String!
+  email: String!
+}
+
+type LoginResponse {
+  access_token: String!
+  user: User!
+}
+
+type Query {
+  businesses: [Business!]!
+  business(provider_id: Int!): Business!
+  users: [User!]!
+  user(name: String!): User!
+}
+
+type Mutation {
+  createBusiness(createBusinessInput: CreateBusinessInput!): Business!
+  updateBusiness(updateBusinessInput: UpdateBusinessInput!): Business!
+  deleteBusiness(provider_id: Int!): Boolean!
+  createUser(createUserInput: CreateUserInput!): User!
+  signup(signupUserInput: SignupUserInput!): User!
+  login(loginUserInput: LoginUserInput!): LoginResponse!
+}
+
+input CreateBusinessInput {
+  provider_name: String!
+  rating: Float
+  total_reviews: Int
+  opening_time: String
+  closing_time: String
+  address: String
+  city: String
+  country: String
+  distance_km: Float
+}
+
+input UpdateBusinessInput {
+  provider_id: Int!
+  provider_name: String
+  rating: Float
+  total_reviews: Int
+  opening_time: String
+  closing_time: String
+  address: String
+  city: String
+  country: String
+  distance_km: Float
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input SignupUserInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input LoginUserInput {
+  name: String!
+  password: String!
+}
