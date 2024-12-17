@@ -1,15 +1,9 @@
-import { Text, View } from "react-native";
+import { Redirect } from "expo-router";
 
-export default function Index() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
-  );
-}
+const App = () => {
+  // Write Conditional Logic to determine if user already signed in and, if true, redirect user to his account (whether its client or business)
+
+  return <Redirect href="/(auth)/welcome" />;
+};
+
+export default App;
