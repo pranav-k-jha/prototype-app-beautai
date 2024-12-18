@@ -13,7 +13,6 @@ import { router } from "expo-router";
 import RoundedButton from "@/components/buttons/RoundedButton";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import * as AuthSession from "expo-auth-session";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
