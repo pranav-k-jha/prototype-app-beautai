@@ -1,9 +1,14 @@
-import { Redirect } from "expo-router";
+import React from "react";
+import { ApolloProvider } from "@apollo/client";
+import SignIn from "./(auth)/sign-in";
+import client from "./(api)/graphql/client";
 
 const App = () => {
-  // Write Conditional Logic to determine if user already signed in and, if true, redirect user to his account (whether its client or business)
-
-  return <Redirect href="/(auth)/welcome" />;
+  return (
+    <ApolloProvider client={client}>
+      <SignIn />
+    </ApolloProvider>
+  );
 };
 
 export default App;

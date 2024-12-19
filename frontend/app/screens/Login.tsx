@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { useMutation, gql } from "@apollo/client";
 import * as SecureStore from "expo-secure-store";
 
 const LOGIN_MUTATION = gql`
-  mutation Login($name: String!, $password: String!) {
-    login(loginUserInput: { name: $name, password: $password }) {
+  mutation Login($email: String!, $password: String!) {
+    login(loginUserInput: { email: $email, password: $password }) {
       access_token
       user {
         user_id
@@ -17,13 +24,13 @@ const LOGIN_MUTATION = gql`
 `;
 
 const LoginScreen: React.FC = () => {
-  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
 
   const handleLogin = async () => {
     try {
-      const { data } = await login({ variables: { name, password } });
+      const { data } = await login({ variables: { email, password } });
       if (data) {
         await SecureStore.setItemAsync("access_token", data.login.access_token);
         alert("Login Successful");
@@ -38,10 +45,10 @@ const LoginScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <TextInput
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
         style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
       />
       <TextInput
         placeholder="Password"
@@ -50,10 +57,8 @@ const LoginScreen: React.FC = () => {
         secureTextEntry
         style={styles.input}
       />
-      <Button
-        title={loading ? "Logging in..." : "Login"}
-        onPress={handleLogin}
-      />
+      <Button title="Login" onPress={handleLogin} />
+      {loading && <ActivityIndicator />}
       {error && <Text style={styles.errorText}>{error.message}</Text>}
     </View>
   );

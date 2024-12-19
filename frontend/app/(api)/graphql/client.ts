@@ -1,13 +1,28 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import * as SecureStore from "expo-secure-store";
 import { setContext } from "@apollo/client/link/context";
+import { Platform } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const LOCAL_SYSTEM_IP_ADDRESS = "192.168.0.90";
+const PORT = "3000";
 const httpLink = new HttpLink({
-  uri: "http://localhost:3000/graphql",
+  uri: `http://${LOCAL_SYSTEM_IP_ADDRESS}:${PORT}/graphql`,
 });
 
+// const httpLink = new HttpLink({
+//   uri: "http://localhost:3000/graphql",
+// });
+
 const authLink = setContext(async (_, { headers }) => {
-  const token = await SecureStore.getItemAsync("access_token");
+  let token;
+  if (Platform.OS === "web") {
+    token = await AsyncStorage.getItem("access_token");
+  } else {
+    token = await SecureStore.getItemAsync("access_token");
+  }
+  // const token = await SecureStore.getItemAsync("access_token");
+  console.log("Token used for auth:", token);
   return {
     headers: {
       ...headers,

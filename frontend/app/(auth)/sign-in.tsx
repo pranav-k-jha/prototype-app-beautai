@@ -15,14 +15,13 @@ import ToggleButton from "@/components/buttons/ToggleButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import * as SecureStore from "expo-secure-store";
 import { gql, useMutation } from "@apollo/client";
+import { useRouter } from "expo-router";
 
 const LOGIN_MUTATION = gql`
-  mutation Login($name: String!, $password: String!) {
-    login(loginUserInput: { name: $name, password: $password }) {
+  mutation Login($email: String!, $password: String!) {
+    login(loginUserInput: { email: $email, password: $password }) {
       access_token
       user {
-        user_id
-        name
         email
       }
     }
@@ -31,39 +30,30 @@ const LOGIN_MUTATION = gql`
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
-  const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
   const [rememberMe, setRememberMe] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async () => {
-    if (!name || !password) {
-      alert("Please enter name and password.");
-      return;
-    }
-
-    // Mock authentication check
-    const isAuthenticated =
-      email === "test@example.com" && password === "password";
-    if (isAuthenticated) {
-      if (rememberMe) {
-        await SecureStore.setItemAsync("user_email", email);
-      } else {
-        await SecureStore.deleteItemAsync("user_email");
+    try {
+      const { data } = await login({ variables: { email, password } });
+      if (data) {
+        await SecureStore.setItemAsync("access_token", data.login.access_token);
+        alert("Login Successful");
+        router.replace("/(client)/(tabs)");
       }
-
-      alert("Login Successful!");
-      router.replace("/(client)/(tabs)");
-    } else {
+    } catch (err) {
+      console.error("Error", err);
       alert("Invalid email or password. Try again.");
     }
   };
 
-  // const handleGoogleLogin = () => {
-  //   // Replace with actual Google login implementation
-  //   alert("Google Login Placeholder");
-  //   router.replace("/(business)/(tabs)");
-  // };
+  const handleGoogleLogin = () => {
+    // Replace with actual Google login implementation
+    alert("Google Login Placeholder");
+    router.replace("/(business)/(tabs)");
+  };
 
   const handleSignUpNavigation = () => {
     router.replace("/(auth)/sign-up");
