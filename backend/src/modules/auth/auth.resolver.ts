@@ -12,7 +12,7 @@ export class AuthResolver {
   @Mutation(() => LoginResponse)
   async login(@Args('loginUserInput') loginUserInput: LoginUserInput) {
     const user = await this.authService.validateUser(
-      loginUserInput.name,
+      loginUserInput.email,
       loginUserInput.password,
     );
 

@@ -13,10 +13,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(name: string, password: string): Promise<any> {
-    const user = await this.usersService.findOneByUsername(name);
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.usersService.findOneByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('No account matched the email entered');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const payload = { name: user.name, sub: user.user_id };
+    const payload = { email: user.email, sub: user.user_id };
     return {
       access_token: this.jwtService.sign(payload),
       user,

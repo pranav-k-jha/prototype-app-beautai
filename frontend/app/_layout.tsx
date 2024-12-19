@@ -9,12 +9,11 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import { ApolloProvider } from '@apollo/client';
-import client from '@/app/(api)/graphql/client'; // Adjust the path to where your client is defined
+import { ApolloProvider } from "@apollo/client";
+import client from "@/app/(api)/graphql/client"; // Adjust the path to where your client is defined
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 SplashScreen.preventAutoHideAsync();
-
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -52,6 +51,5 @@ export default function RootLayout() {
         <StatusBar style={colorScheme === "dark" ? "dark" : "light"} />
       </ThemeProvider>
     </ApolloProvider>
-
   );
 }

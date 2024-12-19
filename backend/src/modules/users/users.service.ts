@@ -47,6 +47,20 @@ export class UsersService {
     return user;
   }
 
+  @UseGuards(JwtAuthGuard)
+  async findOneByEmail(email: string): Promise<User | undefined> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+
+    console.log('Retrieved user:', user);
+    return user;
+  }
+
   // async update(updateUserInput: UpdateUserInput): Promise<User> {
   //   const { user_id, ...updateData } = updateUserInput;
 

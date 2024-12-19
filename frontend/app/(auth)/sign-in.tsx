@@ -13,11 +13,61 @@ import { router } from "expo-router";
 import RoundedButton from "@/components/buttons/RoundedButton";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import * as SecureStore from "expo-secure-store";
+import { gql, useMutation } from "@apollo/client";
+
+const LOGIN_MUTATION = gql`
+  mutation Login($name: String!, $password: String!) {
+    login(loginUserInput: { name: $name, password: $password }) {
+      access_token
+      user {
+        user_id
+        name
+        email
+      }
+    }
+  }
+`;
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
   const [rememberMe, setRememberMe] = useState(false);
+
+  const handleLogin = async () => {
+    if (!name || !password) {
+      alert("Please enter name and password.");
+      return;
+    }
+
+    // Mock authentication check
+    const isAuthenticated =
+      email === "test@example.com" && password === "password";
+    if (isAuthenticated) {
+      if (rememberMe) {
+        await SecureStore.setItemAsync("user_email", email);
+      } else {
+        await SecureStore.deleteItemAsync("user_email");
+      }
+
+      alert("Login Successful!");
+      router.replace("/(client)/(tabs)");
+    } else {
+      alert("Invalid email or password. Try again.");
+    }
+  };
+
+  // const handleGoogleLogin = () => {
+  //   // Replace with actual Google login implementation
+  //   alert("Google Login Placeholder");
+  //   router.replace("/(business)/(tabs)");
+  // };
+
+  const handleSignUpNavigation = () => {
+    router.replace("/(auth)/sign-up");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,7 +77,6 @@ const SignIn = () => {
         style={styles.backgroundImage}
         resizeMode="cover"
       >
-        {/* Backdrop Filter Container */}
         {/* Backdrop Filter Container */}
         <BlurView intensity={100} style={styles.backdrop}>
           {/* 1. Title Section */}
@@ -49,7 +98,11 @@ const SignIn = () => {
               onChangeText={setPassword}
             />
             {/* "Forgot?" Link */}
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() =>
+                alert("Forgot password functionality coming soon.")
+              }
+            >
               <Text style={styles.forgotText}>FORGOT?</Text>
             </TouchableOpacity>
           </View>
@@ -57,10 +110,7 @@ const SignIn = () => {
           {/* 3. Remember Me Section */}
           <View style={styles.rememberMeContainer}>
             <ToggleButton
-              onToggle={(state) => {
-                setRememberMe(state);
-                console.log(rememberMe);
-              }}
+              onToggle={(state) => setRememberMe(state)}
               width="60%"
               height={30}
               activeColor="#FFD7E7"
@@ -73,7 +123,7 @@ const SignIn = () => {
           <View style={styles.buttonsContainer}>
             <RoundedButton
               text="LOG IN"
-              onPress={() => router.replace("/(client)/(tabs)")}
+              onPress={handleLogin}
               backgroundColor="black"
               textColor="white"
               width="85%"
@@ -81,7 +131,7 @@ const SignIn = () => {
             />
             <RoundedButton
               text="LOG IN WITH GOOGLE"
-              onPress={() => router.replace("/(business)/(tabs)")}
+              onPress={handleGoogleLogin}
               backgroundColor="white"
               icon={<AntDesign name="google" size={24} color="black" />}
               textColor="black"
@@ -94,10 +144,7 @@ const SignIn = () => {
           <View style={styles.signUpContainer}>
             <Text style={styles.signUpText}>
               Don't have an account?{" "}
-              <Text
-                style={styles.signUpLink}
-                onPress={() => router.replace("/(auth)/sign-up")}
-              >
+              <Text style={styles.signUpLink} onPress={handleSignUpNavigation}>
                 SIGN UP
               </Text>
             </Text>
@@ -138,15 +185,15 @@ const styles = StyleSheet.create({
     letterSpacing: -0.02,
     textTransform: "uppercase",
     color: "#FFFFFF",
-    alignSelf: "flex-start", // Align the title to the left
-    marginBottom: "5%", // Add spacing below the title
+    alignSelf: "flex-start",
+    marginBottom: "5%",
   },
   inputContainer: {
     width: "100%",
     marginBottom: "5%",
   },
   input: {
-    height: "auto",
+    height: 40,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     marginBottom: "2.5%",
@@ -159,21 +206,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   rememberMeContainer: {
-    flexDirection: "row", // Keep items in a row
-    alignItems: "center", // Align items vertically
-    justifyContent: "flex-start", // Align items to the left
-    width: "100%", // Make sure it spans the full width
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "100%",
     marginBottom: "5%",
   },
   rememberMeText: {
     fontSize: 14,
-    marginLeft: 10, // Add space between the toggle and the text
+    marginLeft: 10,
     textTransform: "uppercase",
     color: "white",
   },
   buttonsContainer: {
     width: "100%",
-    alignItems: "center", // Center buttons horizontally
+    alignItems: "center",
     marginBottom: "5%",
   },
   signUpContainer: {
@@ -182,12 +229,12 @@ const styles = StyleSheet.create({
   signUpText: {
     fontSize: 16,
     textAlign: "center",
-    textTransform: "uppercase", // Capitalize all text
+    textTransform: "uppercase",
   },
   signUpLink: {
     fontSize: 16,
     textAlign: "center",
-    textTransform: "uppercase", // Capitalize all text
+    textTransform: "uppercase",
     color: "#FFD7E7",
   },
 });

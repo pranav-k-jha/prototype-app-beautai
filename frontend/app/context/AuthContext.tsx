@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import * as AuthSession from "expo-auth-session";
+import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
 interface AuthProps {
@@ -32,6 +33,22 @@ export const AuthProvider = ({ children }: any) => {
     authenticated: null,
   });
 
+  useEffect(() => {
+    const loadToken = async () => {
+      const token = await SecureStore.getItemAsync(TOKEN_KEY as string);
+      console.log("stored:", token);
+
+      if (token) {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      }
+
+      setAuthState({
+        token: token,
+        authenticated: true,
+      });
+    };
+  }, []);
+
   const register = async (name: string, password: string) => {
     try {
       return await axios.post(`${API_URL}/users`, { name, password });
@@ -50,11 +67,36 @@ export const AuthProvider = ({ children }: any) => {
         token: result.data.token,
         authenticated: true,
       });
+
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${result.data.token}`;
+
+      await SecureStore.setItemAsync(TOKEN_KEY as string, result.data.tok);
     } catch (e) {
       return { error: true, msg: (e as any).response.data.msg };
     }
   };
 
-  const value = {};
+  const logout = async () => {
+    //Delete token from storage
+    await SecureStore.deleteItemAsync(TOKEN_KEY as string);
+
+    //Update HTTP Headers
+    axios.defaults.headers.common["Authorization"] = "";
+
+    //Reset auth state
+    setAuthState({
+      token: null,
+      authenticated: false,
+    });
+  };
+
+  const value = {
+    onRegister: register,
+    onLogin: login,
+    onLogout: logout,
+    authState,
+  };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

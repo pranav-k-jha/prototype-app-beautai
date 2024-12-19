@@ -27,8 +27,17 @@ export class UsersResolver {
   @UseGuards(GqlAuthGuard)
   @Query(() => User, { name: 'user' })
   @UseGuards(JwtAuthGuard)
-  findOne(@Args('name', { type: () => String }) name: string): Promise<User> {
-    return this.usersService.findOneByUsername(name);
+  async findOne(
+    @Args('name', { type: () => String, nullable: true }) name?: string,
+    @Args('email', { type: () => String, nullable: true }) email?: string,
+  ): Promise<User> {
+    if (name) {
+      return this.usersService.findOneByUsername(name);
+    } else if (email) {
+      return this.usersService.findOneByEmail(email);
+    } else {
+      throw new Error('Either name or email must be provided');
+    }
   }
 
   // @Mutation(() => User)
