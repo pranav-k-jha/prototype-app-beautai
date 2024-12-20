@@ -12,41 +12,72 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import { router } from "expo-router";
 import RoundedButton from "@/components/buttons/RoundedButton";
-import ToggleButton from "@/components/buttons/ToggleButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useMutation } from "@apollo/client";
+import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
+import { SIGN_UP_MUTATION } from "../mutations/mutations";
 
 const SignUp = () => {
-  const [userType, setUserType] = useState("client");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [businessName, setBusinessName] = useState("");
-  const [address, setAddress] = useState("");
-
-  // Modal visibility state
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleToggle = (state: boolean) => {
-    setUserType(state ? "business" : "client");
+  const [signUp] = useMutation(SIGN_UP_MUTATION);
+
+  const handleToggle = () => {
     setName("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
-    if (state) {
-      setBusinessName("");
-      setAddress("");
-    }
   };
 
-  // Function to open the modal
   const openTermsModal = () => {
     setModalVisible(true);
   };
 
-  // Function to close the modal
   const closeTermsModal = () => {
     setModalVisible(false);
+  };
+
+  const handleSignUp = async () => {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const { data } = await signUp({
+        variables: {
+          signupUserInput: {
+            name,
+            email,
+            password,
+          },
+        },
+      });
+
+      if (data?.signUp?.token) {
+        const { token } = data.signUp;
+
+        // Store the token securely
+        if (Platform.OS === "web") {
+          await AsyncStorage.setItem("access_token", token);
+        } else {
+          await SecureStore.setItemAsync("access_token", token);
+        }
+        console.log("Token used for auth:", token);
+        // Navigate or handle other login logic
+        alert("Sign-up and login successful!");
+        handleToggle();
+      }
+    } catch (error) {
+      console.error("Sign-up error:", error);
+      alert("Error during sign-up.");
+    }
   };
 
   return (
@@ -59,19 +90,6 @@ const SignUp = () => {
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <BlurView intensity={100} style={styles.backdrop}>
             <Text style={styles.title}>Create your account</Text>
-
-            <View style={styles.userTypeContainer}>
-              <ToggleButton
-                onToggle={handleToggle}
-                width="60%"
-                height={30}
-                activeColor="#FFD7E7"
-                passiveColor="#ccc"
-              />
-              <Text style={styles.userTypeText}>
-                {userType === "client" ? "Client Account" : "Business Account"}
-              </Text>
-            </View>
 
             <View style={styles.inputContainer}>
               <TextInput
@@ -100,32 +118,12 @@ const SignUp = () => {
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
               />
-
-              {userType === "business" && (
-                <>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Business Name"
-                    value={businessName}
-                    onChangeText={setBusinessName}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Business Address"
-                    value={address}
-                    onChangeText={setAddress}
-                  />
-                </>
-              )}
             </View>
 
             <View style={styles.termsContainer}>
               <Text style={styles.termsText}>
                 By continuing, I am accepting all the{" "}
-                <Text
-                  style={styles.termsLink}
-                  onPress={openTermsModal} // Open modal when clicked
-                >
+                <Text style={styles.termsLink} onPress={openTermsModal}>
                   terms and policies
                 </Text>
               </Text>
@@ -138,7 +136,7 @@ const SignUp = () => {
                 textColor="white"
                 width="90%"
                 height={50}
-                onPress={() => router.replace("/(client)/(tabs)")}
+                onPress={handleSignUp}
               />
               <RoundedButton
                 text="SIGN UP WITH GOOGLE"
@@ -166,8 +164,6 @@ const SignUp = () => {
         </ScrollView>
       </ImageBackground>
 
-      {/* Modal for Terms and Policies */}
-
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -179,34 +175,12 @@ const SignUp = () => {
             <Text style={styles.modalTitle}>Terms and Policies</Text>
             <ScrollView>
               <Text style={styles.modalText}>
-                {/* Add your terms and policy text here */}
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus imperdiet, nulla et dictum interdum, nisi lorem
-                egestas odio, vitae scelerisque enim ligula venenatis dolor.
-                Maecenas nisl est, ultrices nec congue eget, auctor vitae massa.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus imperdiet, nulla et dictum interdum, nisi lorem
-                egestas odio, vitae scelerisque enim ligula venenatis dolor.
-                Maecenas nisl est, ultrices nec congue eget, auctor vitae massa.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus imperdiet, nulla et dictum interdum, nisi lorem
-                egestas odio, vitae scelerisque enim ligula venenatis dolor.
-                Maecenas nisl est, ultrices nec congue eget, auctor vitae massa.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus imperdiet, nulla et dictum interdum, nisi lorem
-                egestas odio, vitae scelerisque enim ligula venenatis dolor.
-                Maecenas nisl est, ultrices nec congue eget, auctor vitae massa.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus imperdiet, nulla et dictum interdum, nisi lorem
-                egestas odio, vitae scelerisque enim ligula venenatis dolor.
-                Maecenas nisl est, ultrices nec congue eget, auctor vitae massa.
-                {/* More text... */}
+                {/*BEAUT terms and consitions*/}
               </Text>
             </ScrollView>
-
-            {/* Centered Button */}
             <View style={styles.modalButtonContainer}>
-              <RoundedButton text={"Close"} onPress={closeTermsModal} />
+              <RoundedButton text="Close" onPress={closeTermsModal} />
             </View>
           </View>
         </View>
@@ -239,39 +213,21 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   title: {
-    fontFamily: "Instrument Sans",
-    fontStyle: "normal",
-    fontWeight: "500",
     fontSize: 32,
-    lineHeight: 39,
-    textTransform: "uppercase",
+    fontWeight: "500",
     color: "white",
     marginBottom: "5%",
     alignSelf: "flex-start",
-    paddingTop: "13%",
-  },
-  userTypeContainer: {
-    marginBottom: "5%",
-    alignSelf: "flex-start",
-  },
-  userTypeText: {
-    fontSize: 16,
-    color: "#FFFFFF",
-    fontWeight: "500",
-    marginTop: 10,
-    textAlign: "left",
   },
   inputContainer: {
     width: "100%",
     marginBottom: "5%",
   },
   input: {
-    height: "auto",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     marginBottom: "2.5%",
     fontSize: 16,
-    opacity: 0.7,
   },
   termsContainer: {
     marginBottom: "5%",
@@ -302,8 +258,6 @@ const styles = StyleSheet.create({
     color: "#FFD7E7",
     fontSize: 16,
   },
-
-  // Modal styles
   modalContainer: {
     flex: 1,
     justifyContent: "center",
@@ -325,12 +279,10 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
     lineHeight: 24,
-    color: "#333",
-    textAlign: "justify", // Justify the text
   },
   modalButtonContainer: {
     marginTop: 20,
-    alignItems: "center", // Center the button horizontally
+    alignItems: "center",
   },
 });
 
