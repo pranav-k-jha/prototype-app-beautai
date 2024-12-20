@@ -70,8 +70,8 @@ const SignUp = () => {
           await SecureStore.setItemAsync("access_token", token);
         }
         console.log("Token used for auth:", token);
-        // Navigate or handle other login logic
         alert("Sign-up and login successful!");
+        router.replace("/(client)/(tabs)");
         handleToggle();
       }
     } catch (error) {
