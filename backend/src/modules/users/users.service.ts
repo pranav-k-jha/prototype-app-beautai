@@ -14,16 +14,6 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  // async createUser(createUserInput: CreateUserInput): Promise<User> {
-  //   const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
-  //   const newUser = this.userRepository.create({
-  //     ...createUserInput,
-  //     password: hashedPassword,
-  //   });
-  //   console.log('Saving user with hashed password:', newUser);
-  //   return this.userRepository.save(newUser);
-  // }
-
   async createUser(signupUserInput: SignupUserInput): Promise<User> {
     const newUser = this.userRepository.create(signupUserInput);
     console.log('Saving user with hashed password:', newUser);
@@ -35,17 +25,17 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  @UseGuards(JwtAuthGuard)
-  async findOneByUsername(name: string): Promise<User | undefined> {
-    const user = await this.userRepository.findOne({
-      where: { name },
-    });
-    if (!user) {
-      throw new NotFoundException(`User with name ${name} not found`);
-    }
-    console.log('Retrieved user:', user);
-    return user;
-  }
+  // @UseGuards(JwtAuthGuard)
+  // async findOneByUsername(name: string): Promise<User | undefined> {
+  //   const user = await this.userRepository.findOne({
+  //     where: { name },
+  //   });
+  //   if (!user) {
+  //     throw new NotFoundException(`User with name ${name} not found`);
+  //   }
+  //   console.log('Retrieved user:', user);
+  //   return user;
+  // }
 
   @UseGuards(JwtAuthGuard)
   async findOneByEmail(email: string): Promise<User | undefined> {

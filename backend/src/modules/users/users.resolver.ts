@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
 
 @Resolver(() => User)
+@UseGuards(GqlAuthGuard)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
@@ -17,26 +18,20 @@ export class UsersResolver {
     return this.usersService.createUser(createUserInput);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Query(() => [User], { name: 'users' })
   @UseGuards(JwtAuthGuard)
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
-  @UseGuards(GqlAuthGuard)
   @Query(() => User, { name: 'user' })
-  @UseGuards(JwtAuthGuard)
   async findOne(
-    @Args('name', { type: () => String, nullable: true }) name?: string,
-    @Args('email', { type: () => String, nullable: true }) email?: string,
+    @Args('email', { type: () => String }) email: string,
   ): Promise<User> {
-    if (name) {
-      return this.usersService.findOneByUsername(name);
-    } else if (email) {
+    if (email) {
       return this.usersService.findOneByEmail(email);
     } else {
-      throw new Error('Either name or email must be provided');
+      throw new Error('Email must be provided');
     }
   }
 

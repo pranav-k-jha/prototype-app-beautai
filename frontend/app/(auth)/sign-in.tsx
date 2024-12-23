@@ -16,17 +16,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import * as SecureStore from "expo-secure-store";
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "expo-router";
-
-const LOGIN_MUTATION = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(loginUserInput: { email: $email, password: $password }) {
-      access_token
-      user {
-        email
-      }
-    }
-  }
-`;
+import { LOGIN_MUTATION } from "../mutations/mutations";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");

@@ -37,7 +37,7 @@ type Query {
   businesses: [Business!]!
   business(provider_id: Int!): Business!
   users: [User!]!
-  user(name: String, email: String): User!
+  user(email: String!): User!
 }
 
 type Mutation {
