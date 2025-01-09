@@ -10,26 +10,38 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
-import { router } from "expo-router";
+
 import RoundedButton from "@/components/buttons/RoundedButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useMutation } from "@apollo/client";
 import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
-import { SIGN_UP_MUTATION } from "../mutations/mutations";
+import { SIGNUP_USER } from "../(api)/graphql/users/users.mutations";
+import { useRouter } from "expo-router";
 
 const SignUp = () => {
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const router = useRouter();
 
-  const [signUp] = useMutation(SIGN_UP_MUTATION);
+  const [signUp] = useMutation(SIGNUP_USER);
+
+  const generateUsername = (name: string) => {
+    // Remove spaces and convert to lowercase
+    const cleanedName = name.replace(/\s+/g, "").toLowerCase();
+    // Add random number to ensure uniqueness
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    return `${cleanedName}${randomNum}`;
+  };
 
   const handleToggle = () => {
     setName("");
+    setUsername("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
@@ -44,6 +56,14 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
+    // Generate username if not provided
+    const generatedUsername = username || generateUsername(name);
+
+    if (!name || !email || !password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
     if (password !== confirmPassword) {
       alert("Passwords do not match.");
       return;
@@ -54,30 +74,40 @@ const SignUp = () => {
         variables: {
           signupUserInput: {
             name,
+            username,
             email,
             password,
           },
         },
       });
 
-      if (data?.signUp?.token) {
-        const { token } = data.signUp;
-
-        // Store the token securely
+      const token = data?.signup?.access_token;
+      if (token) {
         if (Platform.OS === "web") {
           await AsyncStorage.setItem("access_token", token);
+          console.log("Token stored in AsyncStorage for web");
+          console.log("Response data:", data);
+          console.log("Token:", data?.signup?.access_token);
         } else {
           await SecureStore.setItemAsync("access_token", token);
+          console.log("Token stored in SecureStore for mobile");
+          console.log("Response data:", data);
+          console.log("Token:", data?.signup?.access_token);
         }
-        console.log("Token used for auth:", token);
-        alert("Sign-up and login successful!");
+
+        // Proceed with navigation after successful sign-up
         router.replace("/(client)/(tabs)");
-        handleToggle();
+        console.log("Navigation successful.");
+      } else {
+        console.error("Token not found in response.");
+        alert("Token not returned from server.");
       }
-    } catch (error) {
-      console.error("Sign-up error:", error);
+    } catch (error: any) {
+      console.error("Sign-up error:", error.message || error);
       alert("Error during sign-up.");
     }
+
+    handleToggle();
   };
 
   return (
@@ -96,7 +126,20 @@ const SignUp = () => {
                 style={styles.input}
                 placeholder="Name"
                 value={name}
-                onChangeText={setName}
+                onChangeText={(text) => {
+                  setName(text);
+                  // Automatically generate username if not manually set
+                  if (!username) {
+                    setUsername(generateUsername(text));
+                  }
+                }}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Username"
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
               />
               <TextInput
                 style={styles.input}
@@ -140,7 +183,7 @@ const SignUp = () => {
               />
               <RoundedButton
                 text="SIGN UP WITH GOOGLE"
-                onPress={() => router.replace("/(client)/(tabs)")}
+                onPress={() => alert("OAuth feature is not available yet!")}
                 backgroundColor="white"
                 icon={<AntDesign name="google" size={24} color="black" />}
                 textColor="black"
@@ -151,7 +194,7 @@ const SignUp = () => {
 
             <View style={styles.signInContainer}>
               <Text style={styles.signInText}>
-                Already have an account?{" "}
+                ALREADY HAVE AN ACCOUNT?{" "}
                 <Text
                   style={styles.signInLink}
                   onPress={() => router.replace("/(auth)/sign-in")}
@@ -172,7 +215,7 @@ const SignUp = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Terms and Policies</Text>
+            <Text style={styles.modalTitle}>TERMS AND POLICIES</Text>
             <ScrollView>
               <Text style={styles.modalText}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -202,52 +245,61 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   backdrop: {
-    width: "95%",
-    top: "2.5%",
-    left: "2.5%",
+    width: "90%",
+    top: "5%",
+    left: "5%",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 20,
-    padding: "5%",
+    padding: "6%",
     backgroundColor: "rgba(255, 255, 255, 0.22)",
     overflow: "hidden",
   },
   title: {
-    fontSize: 32,
+    fontFamily: "Instrument Sans",
     fontWeight: "500",
-    color: "white",
-    marginBottom: "5%",
+    fontSize: 32,
+    lineHeight: 39,
+    letterSpacing: -0.02,
+    textTransform: "uppercase",
+    color: "#FFFFFF",
+    marginBottom: "6%",
     alignSelf: "flex-start",
   },
   inputContainer: {
     width: "100%",
-    marginBottom: "5%",
+    marginBottom: "6%",
   },
   input: {
+    height: 50,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    marginBottom: "2.5%",
+    borderBottomColor: "#555", // Subtle border color for better contrast
+    marginBottom: 15,
     fontSize: 16,
+    paddingLeft: 10,
+    color: "#000",
+    backgroundColor: "rgba(255, 255, 255, 0.2)", // Keep semi-transparent white background
+    borderRadius: 8,
   },
   termsContainer: {
-    marginBottom: "5%",
+    marginBottom: "6%",
   },
   termsText: {
-    color: "#FFFFFF",
-    fontSize: 13,
+    color: "#000",
+    fontSize: 14,
     textAlign: "center",
   },
   termsLink: {
-    color: "#FFD7E7",
+    color: "#000",
     textDecorationLine: "underline",
   },
   buttonsContainer: {
     width: "100%",
     alignItems: "center",
-    marginBottom: "5%",
+    marginBottom: "6%",
   },
   signInContainer: {
-    marginTop: "5%",
+    marginTop: "6%",
     alignItems: "center",
   },
   signInText: {
@@ -255,8 +307,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   signInLink: {
-    color: "#FFD7E7",
     fontSize: 16,
+    textAlign: "center",
+    textTransform: "uppercase",
+    color: "#000", // Gold color for visibility
+    fontWeight: "600", // Bold to make it stand out
   },
   modalContainer: {
     flex: 1,
@@ -275,10 +330,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#333333",
   },
   modalText: {
     fontSize: 16,
     lineHeight: 24,
+    color: "#333333",
   },
   modalButtonContainer: {
     marginTop: 20,

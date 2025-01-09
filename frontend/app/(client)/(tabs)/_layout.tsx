@@ -125,6 +125,12 @@ export default function Layout() {
             </View>
           ),
         }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault(); // Prevent default navigation behavior
+            router.replace("/community"); // Reset the stack and navigate to the root screen of the Profile tab
+          },
+        }}
       />
 
       <Tabs.Screen
@@ -148,8 +154,8 @@ export default function Layout() {
         }}
         listeners={{
           tabPress: (e) => {
-            e.preventDefault(); // Prevent default navigation behavior
-            router.replace("/profile"); // Reset the stack and navigate to the root screen of the Profile tab
+            e.preventDefault();
+            router.replace("/profile");
           },
         }}
       />

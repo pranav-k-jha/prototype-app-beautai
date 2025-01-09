@@ -1,13 +1,14 @@
-import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { User } from 'src/modules/users/entities/users.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Service } from "../../services/entities/services.entity";
+import { User } from "../../users/entities/users.entity";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Status {
   COMPLETED = 'Completed',
   PENDING = 'Pending',
   CANCELLED = 'Cancelled',
   RESCHEDULED = 'Rescheduled',
-  NOSHOW = 'Noshow',
+  NO_SHOW = 'No_Show',
 }
 
 registerEnumType(Status, {
@@ -22,30 +23,25 @@ export class Appointments {
   @Field(() => Int)
   appointment_id: number;
 
-  @Field((type) => User)
+  @ManyToOne(() => Service, (service) => service.appointments, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'service_id' })
+  @Field(() => Service, { nullable: true })
+  service: Service;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'user_id' })
+  @Field(() => User, { nullable: true })
   user: User;
 
-  @Column()
-  @Field((type) => Int)
-  user_id: number;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  appointment_date?: Date;
-
-  @Column({ type: 'enum', enum: Status })
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.PENDING,
+  })
   @Field(() => Status)
   status: Status;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  @Field()
-  created_at: Date;
-
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  @Field()
-  updated_at: Date;
+  @Column({ type: 'int', nullable: true })
+  @Field(() => Int, { nullable: true })
+  rating?: number;
 }

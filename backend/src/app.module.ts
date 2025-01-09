@@ -9,32 +9,53 @@ import { UsersModule } from './modules/users/users.module';
 import { DataSource } from 'typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { AppService } from './app.service';
+import { ServicesModule } from './modules/services/services.module';
+import { AppointmentsModule } from './modules/appointments/appointments.module';
+import { ConfigService } from '@nestjs/config';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
+      validationSchema: Joi.object({
+        DB_HOST: Joi.string().required(),
+        DB_PORT: Joi.number().required(),
+        DB_USERNAME: Joi.string().required(),
+        DB_PASSWORD: Joi.string().required(),
+        DB_DATABASE: Joi.string().required(),
+        GRAPHQL_SCHEMA_PATH: Joi.string().required(),
+      }),
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT, 10),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
-      entities: [__dirname + '/../**/*.entities.{js,ts}'],
-      migrations: [
-        /*...*/
-      ],
-      synchronize: true,
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('DB_HOST'),
+        port: parseInt(configService.get('DB_PORT'), 10),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database:
+          configService.get('NODE_ENV') === 'test'
+            ? configService.get('TEST_DB_DATABASE')
+            : configService.get('DB_DATABASE'),
+        entities: [__dirname + '/modules/**/*.entity.{js,ts}'],
+        migrations: [
+          /*...*/
+        ],
+        synchronize: configService.get('NODE_ENV') === 'test', // Sync only in development environment
+        // dropSchema: configService.get('NODE_ENV') === 'development', // Drop schema only in development environment
+        autoLoadEntities: true,
+      }),
+      inject: [ConfigService], // Inject ConfigService to access environment variables
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), process.env.GRAPHQL_SCHEMA_PATH),
     }),
     BusinessModule,
+    ServicesModule,
+    AppointmentsModule,
     UsersModule,
     AuthModule,
   ],

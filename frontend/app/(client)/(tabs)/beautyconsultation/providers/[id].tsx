@@ -1,10 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, FlatList } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import Slide from "@/components/slides/Slide";
 import { ThemedView } from "@/components/ThemedView";
 import KeyValueTable, { Entry } from "@/components/Table";
-import SwipeCarousel from "@/components/slides/SwipeCarousel";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import {
@@ -14,6 +12,9 @@ import {
 } from "@/constants/Layout";
 import CircularButton from "@/components/buttons/CircularButton";
 import RoundedButton from "@/components/buttons/RoundedButton";
+import ProviderDetailsCard from "@/components/cards/client/ProviderDetailsCard";
+import { router } from "expo-router";
+import ReviewCard from "@/components/cards/client/ReviewCard";
 
 type ServiceDetails = {
   service_type: string;
@@ -114,17 +115,17 @@ const ServiceDetailsTable: React.FC<ServiceDetailsTableProps> = ({
 };
 
 const imageMap: Record<string, any> = {
-  "/assets/images/recommendation1.png": require("@/assets/images/recommendation1.png"),
-  "/assets/images/recommendation2.png": require("@/assets/images/recommendation2.png"),
-  "/assets/images/recommendation3.png": require("@/assets/images/recommendation3.png"),
+  "1": require("@/assets/images/recommendation-1.png"),
+  "2": require("@/assets/images/recommendation-2.png"),
+  "3": require("@/assets/images/recommendation-3.png"),
 };
 
 const ProviderDetails: React.FC = () => {
-  const { url } = useLocalSearchParams(); // Access the 'url' query parameter
+  const { id } = useLocalSearchParams(); // Access the 'url' query parameter
 
   // Ensure `url` is a string (not an array)
   const imageSource =
-    typeof url === "string" && imageMap[url] ? imageMap[url] : null;
+    typeof id === "string" && imageMap[id] ? imageMap[id] : null;
 
   const businessData: Entry[] = [
     { label: "MINIMUM BOOKING NOTICE", value: "2 HOURS" },
@@ -139,20 +140,23 @@ const ProviderDetails: React.FC = () => {
   };
 
   const reviewData = [
-    <Slide
-      id={2}
-      image={require("@/assets/images/review1.png")}
-      url={""}
-      width={353}
-      height={120}
-    />,
-    <Slide
-      id={3}
-      image={require("@/assets/images/review1.png")}
-      url={""}
-      width={353}
-      height={120}
-    />,
+    {
+      id: 1,
+      name: "Mary Jane",
+      profileImage: require("@/assets/images/reviewer1.png"),
+      date: "12 DEC 2024",
+      starRating: 4.3,
+      message: "best esthetician in town. si recommend this beauty expert.",
+    },
+
+    {
+      id: 2,
+      name: "Felicia Hardy",
+      profileImage: require("@/assets/images/reviewer2.png"),
+      date: "18 DEC 2024",
+      starRating: 4.7,
+      message: "Excellent service",
+    },
   ];
 
   const highlightThemeColor = useThemeColor({}, "highlighted");
@@ -162,69 +166,156 @@ const ProviderDetails: React.FC = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        {/* Slide Section with added margin */}
-        <View style={styles.centeredSlides}>
-          <Slide id={1} image={imageSource} url={""} width={353} height={264} />
-        </View>
+      <FlatList
+        data={[
+          "header",
+          "overview",
+          "servicedetails",
+          "policies",
+          "reviews",
+          "booking",
+        ]}
+        renderItem={({ item }) => {
+          switch (item) {
+            case "header":
+              return (
+                <View style={styles.header}>
+                  {/* Header with two buttons and the centered title */}
 
-        {/* Service Details Section */}
-        <View style={styles.section}>
-          <ThemedText type="sectionHeader">Service Details</ThemedText>
+                  <CircularButton
+                    size={40}
+                    iconType={"arrow-left"}
+                    onPress={function (): void {
+                      router.back();
+                    }}
+                  />
+                  <ThemedText style={styles.headerTitle}>
+                    Provider Details
+                  </ThemedText>
+                  <CircularButton
+                    size={40}
+                    iconType={"vertical-dots"}
+                    onPress={function (): void {
+                      router.replace("/(client)/(tabs)/profile");
+                    }}
+                  />
+                </View>
+              );
 
-          <ServiceDetailsTable
-            serviceDetails={serviceDetails}
-            itemThemeColor={itemThemeColor}
-            borderThemeColor={borderThemeColor}
-            textThemeColor={textThemeColor}
-            highlightThemeColor={highlightThemeColor}
-          />
-        </View>
+            case "overview":
+              return (
+                <View style={styles.centeredSlides}>
+                  <ProviderDetailsCard
+                    id={""}
+                    backgroundImage={imageSource}
+                    companyLogo={require("@/assets/images/companyLogo1.png")}
+                    companyTitle={"Derma Care Clinic"}
+                    starRating={4}
+                    numberOfReviews={922}
+                    openingTimes={{
+                      Monday: { openingTime: "09:00", closingTime: "17:00" },
+                      Tuesday: { openingTime: "09:00", closingTime: "17:00" },
+                      Wednesday: { openingTime: "10:00", closingTime: "17:00" },
+                      Thursday: { openingTime: "09:00", closingTime: "17:00" },
+                      Friday: { openingTime: "09:00", closingTime: "17:00" },
+                      Saturday: { openingTime: "10:00", closingTime: "14:00" },
+                      Sunday: null, // Closed all day}} address={"123 Lincon St., Basus, Nigeria"} phoneNumber={"123 456 789"} bookmarkFunction={function (): void {
+                    }}
+                    mappingFunction={function (): void {}}
+                    address={"123 Lincon St., Basus, Nigeria"}
+                    phoneNumber={"123 456 789"}
+                    bookmarkFunction={function (): void {}}
+                    width="95%"
+                    height={300}
+                  />
+                </View>
+              );
 
-        {/* Booking Rules & Policies Section */}
-        <View style={styles.section}>
-          <ThemedText type="sectionHeader">Booking Rules & Policies</ThemedText>
-          <KeyValueTable data={businessData} />
-        </View>
+            case "servicedetails":
+              return (
+                <View style={styles.section}>
+                  <ThemedText type="sectionHeader">Service Details</ThemedText>
+                  <ServiceDetailsTable
+                    serviceDetails={serviceDetails}
+                    itemThemeColor={itemThemeColor}
+                    borderThemeColor={borderThemeColor}
+                    textThemeColor={textThemeColor}
+                    highlightThemeColor={highlightThemeColor}
+                  />
+                </View>
+              );
 
-        {/* Reviews Section */}
-        <View style={styles.section}>
-          <ThemedText type="sectionHeader">Reviews</ThemedText>
-          <SwipeCarousel
-            slides={reviewData}
-            slideWidth={353}
-            slideHeight={120}
-            spacing={10}
-          />
-        </View>
+            case "policies":
+              return (
+                <View style={styles.section}>
+                  <ThemedText type="sectionHeader">
+                    Booking Rules & Policies
+                  </ThemedText>
+                  <KeyValueTable data={businessData} />
+                </View>
+              );
+            case "reviews":
+              return (
+                <View style={styles.section}>
+                  <ThemedText type="sectionHeader">reviews</ThemedText>
 
-        {/* Buttons Section */}
-        <View style={styles.buttonsSection}>
-          {/* Circular Button 1 */}
-          <CircularButton
-            size={50}
-            iconType={"phone"} // Replace "add" with the actual icon type
-            onPress={() => console.log("call")}
-            iconColor="black"
-          />
+                  <FlatList
+                    horizontal
+                    data={reviewData}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                      <ReviewCard
+                        name={item.name}
+                        profileImage={item.profileImage} // Replace with your local image path
+                        date={item.date}
+                        starRating={item.starRating}
+                        message={item.message}
+                      />
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                    ItemSeparatorComponent={() => (
+                      <View style={{ width: 10 }} />
+                    )}
+                  />
+                </View>
+              );
 
-          {/* Circular Button 2 */}
-          <CircularButton
-            size={50}
-            iconType={"mail"} // Replace "share" with the actual icon type
-            onPress={() => console.log("mail")}
-            iconColor="black"
-          />
+            case "booking":
+              return (
+                <View style={styles.buttonsSection}>
+                  {/* Circular Button 1 */}
+                  <CircularButton
+                    size={50}
+                    iconType={"phone"} // Replace "add" with the actual icon type
+                    onPress={() => console.log("call")}
+                    iconColor="black"
+                  />
 
-          {/* Rounded Button */}
-          <RoundedButton
-            backgroundColor="black"
-            textColor="white"
-            onPress={() => console.log("Rounded Button Pressed")}
-            text="Book Now"
-          />
-        </View>
-      </ScrollView>
+                  {/* Circular Button 2 */}
+                  <CircularButton
+                    size={50}
+                    iconType={"mail"} // Replace "share" with the actual icon type
+                    onPress={() => console.log("mail")}
+                    iconColor="black"
+                  />
+
+                  {/* Rounded Button */}
+                  <RoundedButton
+                    backgroundColor="black"
+                    textColor="white"
+                    onPress={() => console.log("Rounded Button Pressed")}
+                    text="Book Now"
+                  />
+                </View>
+              );
+
+            default:
+              return null;
+          }
+        }}
+        contentContainerStyle={styles.listContent}
+        keyExtractor={(item, index) => index.toString()}
+      />
     </ThemedView>
   );
 };
@@ -257,6 +348,27 @@ const styles = StyleSheet.create({
     justifyContent: "space-between", // Distribute buttons evenly
     alignItems: "center", // Align buttons vertically
     marginBottom: SECTION_DISTANCE,
+  },
+
+  listContent: {
+    paddingBottom: 20,
+  },
+
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: SECTION_DISTANCE,
+    marginBottom: 30,
+  },
+
+  headerTitle: {
+    fontFamily: "InstrumentSansBold",
+    fontWeight: "600",
+    fontSize: 16,
+    lineHeight: 28,
+    letterSpacing: -0.02 * 16,
+    textTransform: "uppercase",
   },
 });
 
@@ -299,11 +411,11 @@ const serviceDetailsStyles = StyleSheet.create({
   pinkValue: {
     fontFamily: "Source Sans Pro",
     fontStyle: "normal",
-    fontWeight: "400", // Numeric value for fontWeight
+    fontWeight: "400",
     fontSize: 18,
     lineHeight: 23,
-    letterSpacing: -0.02, // React Native uses `letterSpacing` in units of density-independent pixels
-    textTransform: "uppercase", // React Native supports 'uppercase', 'lowercase', and 'capitalize'
+    letterSpacing: -0.02,
+    textTransform: "uppercase",
   },
   partialLine: {
     height: 1,

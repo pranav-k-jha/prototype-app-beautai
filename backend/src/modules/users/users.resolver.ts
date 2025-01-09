@@ -1,51 +1,101 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/users.entity';
-import { CreateUserInput } from './dto/create-user.input';
-import { UseGuards } from '@nestjs/common';
+import { SignupUserInput } from '../auth/dto/signup-user.input';
+import { NotFoundException, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
+import { UpdateUserInput } from './dto/update-user.input';
+import { GraphQLError } from 'graphql';
 
 @Resolver(() => User)
 @UseGuards(GqlAuthGuard)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
+  // Mutation: Create a new user
   @Mutation(() => User)
   async createUser(
-    @Args('createUserInput') createUserInput: CreateUserInput,
+    @Args('signupUserInput') signupUserInput: SignupUserInput,
   ): Promise<User> {
-    return this.usersService.createUser(createUserInput);
+    return this.usersService.createUser(signupUserInput);
   }
 
-  @Query(() => [User], { name: 'users' })
+  // Query: Get all users (Protected Route)
   @UseGuards(JwtAuthGuard)
-  findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  @Query(() => [User], { name: 'users' })
+  async findAllUsers(): Promise<User[]> {
+    return this.usersService.findAllUsers();
   }
+
+  // Query: Get a user by username or email
 
   @Query(() => User, { name: 'user' })
-  async findOne(
-    @Args('email', { type: () => String }) email: string,
+  async findByEmailOrUsername(
+    @Args('identifier', { type: () => String }) identifier: string,
   ): Promise<User> {
-    if (email) {
-      return this.usersService.findOneByEmail(email);
-    } else {
-      throw new Error('Email must be provided');
+    if (!identifier) {
+      throw new NotFoundException(
+        'An identifier (email or username) must be provided',
+      );
+    }
+
+    const user = await this.usersService.findByEmailOrUsername(identifier);
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with identifier "${identifier}" not found`,
+      );
+    }
+
+    return user;
+  }
+
+  // Mutation: Update a user by ID
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => User)
+  async updateUser(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('updateUserInput') updateUserInput: UpdateUserInput,
+  ): Promise<User> {
+    const updatedUser = await this.usersService.updateUser(id, updateUserInput);
+    if (!updatedUser) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+    return updatedUser;
+  }
+
+  // Mutation: Delete a user by ID (Protected Route)
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Boolean)
+  async removeUser(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<boolean> {
+    try {
+      await this.usersService.remove(id);
+      return true;
+    } catch {
+      return false;
     }
   }
 
-  // @Mutation(() => User)
-  // updateUser(
-  //   @Args('updateUserInput') updateUserInput: UpdateUserInput,
-  // ): Promise<User> {
-  //   return this.usersService.update(updateUserInput);
-  // }
-
-  // @Mutation(() => Boolean)
-  // removeUser(
-  //   @Args('user_id', { type: () => Int }) user_id: number,
-  // ): Promise<boolean> {
-  //   return this.usersService.remove(user_id);
-  // }
+  // Mutation: Reset password
+  @Mutation(() => Boolean)
+  async resetPassword(
+    @Args('identifier', { type: () => String }) identifier: string,
+    @Args('newPassword', { type: () => String }) newPassword: string,
+  ): Promise<boolean> {
+    try {
+      return await this.usersService.resetPassword(identifier, newPassword);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new GraphQLError(error.message, {
+          extensions: {
+            code: 'USER_NOT_FOUND',
+          },
+        });
+      }
+      throw error;
+    }
+  }
 }

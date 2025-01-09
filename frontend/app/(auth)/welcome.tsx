@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Image, StyleSheet, ImageBackground } from "react-native";
+import { Text, Image, StyleSheet, ImageBackground, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import { router } from "expo-router";
@@ -14,34 +14,48 @@ const Welcome = () => {
         style={styles.backgroundImage}
         resizeMode="cover"
       >
-        {/* Backdrop Filter Container */}
-        <BlurView intensity={100} style={styles.backdrop}>
-          {/* Company Logo */}
-          <Image
-            source={require("@/assets/images/BeautAI.png")} // Replace with your logo path
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          {/* Welcome Message */}
-          <Text style={styles.welcomeText}>Welcome to Our App!</Text>
+        {/* Overlay Blur */}
+        <View style={styles.overlay}>
+          {/* Backdrop Filter Container */}
+          <BlurView intensity={80} style={styles.backdrop}>
+            {/* Company Logo */}
+            <Image
+              source={require("@/assets/images/BeautAI.png")} // Replace with your logo path
+              style={styles.logo}
+            />
 
-          {/* Buttons */}
-          <RoundedButton
-            text="Get Started"
-            onPress={() => router.replace("/(auth)/sign-up")}
-            backgroundColor="#1e90ff"
-            width="80%"
-            height="10%"
-          />
-          <RoundedButton
-            text="Sign In"
-            onPress={() => router.replace("/(auth)/sign-in")}
-            backgroundColor="black"
-            textColor="white"
-            width="80%"
-            height="10%"
-          />
-        </BlurView>
+            {/* Welcome Message */}
+            <Text style={styles.welcomeText}>WELCOME TO BEAUT-AI</Text>
+
+            {/* Buttons */}
+            <RoundedButton
+              text="GET STARTED"
+              backgroundColor="#1e90ff"
+              textColor="white"
+              width="90%"
+              height={50}
+              onPress={() => router.replace("/")}
+            />
+
+            <RoundedButton
+              text="SIGN IN"
+              backgroundColor="black"
+              textColor="white"
+              width="90%"
+              height={50}
+              onPress={() => router.replace("/(auth)/sign-in")}
+            />
+
+            <RoundedButton
+              text="SIGN UP"
+              backgroundColor="black"
+              textColor="white"
+              width="90%"
+              height={50}
+              onPress={() => router.replace("/(auth)/sign-up")}
+            />
+          </BlurView>
+        </View>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -56,28 +70,33 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Adds a dark translucent overlay
+  },
   backdrop: {
-    width: "95%", // Backdrop takes 90% of the screen width
-    height: "95%", // Backdrop takes 70% of the screen height
-    top: "2.5%",
-    left: "2.5%",
+    flex: 1,
+    margin: "5%",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 20,
-    padding: "5%", // Padding as a percentage of the backdrop size
-    backgroundColor: "rgba(255, 255, 255, 0.22)",
+    borderRadius: 25,
+    backgroundColor: "rgba(255, 255, 255, 0.2)", // Slightly transparent white
     overflow: "hidden",
+    paddingHorizontal: 20,
+    paddingVertical: 30,
   },
   logo: {
-    width: "30%", // Logo takes 30% of the backdrop's width
-    height: "20%",
-    marginBottom: "5%", // Space below the logo as percentage
+    width: "40%",
+    aspectRatio: 1,
+    marginBottom: 20,
+    resizeMode: "contain",
   },
   welcomeText: {
-    fontSize: 24,
+    fontSize: 28, // Larger font for emphasis
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: "5%",
+    color: "#fff", // White text to contrast the background
+    marginBottom: 40,
   },
 });
 

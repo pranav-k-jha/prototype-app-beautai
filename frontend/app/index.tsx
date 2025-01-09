@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Redirect } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { Platform } from "react-native";
+import { Platform, Text } from "react-native";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -28,7 +28,7 @@ const App = () => {
   }, []);
 
   if (isAuthenticated === null) {
-    return null; // You can return a loading spinner or similar while checking
+    return <Text>Loading...</Text>;
   }
 
   return (

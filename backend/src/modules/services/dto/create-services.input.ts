@@ -1,24 +1,29 @@
-import { Field, Float, InputType } from "@nestjs/graphql";
-import { Matches } from "class-validator";
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
+import { Matches, IsString, IsOptional, IsNotEmpty, IsNumber } from 'class-validator';
 
 @InputType()
 export class CreateServicesInput {
   @Field()
+  @IsString()
+  @IsNotEmpty()
   service_name: string;
 
-  @Field()
-  service_category: string;
-
   @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
   service_description?: string;
 
-  @Field(() => String) // Representing TIME as a string
-  @Matches(/^([0-1]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, {
-    message: 'Duration must be in the format HH:MM:SS',
-  })
-  duration: string;
-
   @Field(() => Float)
+  @IsNumber()
   price: number;
 
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  service_type: string;
+
+  @Field(() => Int)
+  @IsNumber()
+  @IsNotEmpty()
+  business_id: number;  // Only the business ID is needed for the relationship
 }

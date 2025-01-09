@@ -4,7 +4,7 @@ export default function Layout() {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="EditPreferences" />
+      <Stack.Screen name="EditPreferences" options={{ headerShown: false }} />
     </Stack>
   );
 }

@@ -1,38 +1,53 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { AppointmentsService } from './appointments.service';
-import { Appointments} from './entities/appointments.entity';
-import { CreateAppointmentsInput } from '../appointments/dto/create-appointments.input';
-import { UpdateAppointmentsInput } from './dto/update-appointments.input'; 
+import { CreateAppointmentDto } from './dto/create-appointments.input';
+import { UpdateAppointmentDto } from './dto/update-appointments.input';
+import { Appointments } from './entities/appointments.entity';
+import { NotFoundException } from '@nestjs/common';
 
 @Resolver(() => Appointments)
 export class AppointmentsResolver {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
-  @Query(() => [Appointments], { name: 'appointments' })
-  findAll(): Promise<Appointments[]> {
+  // Create a new appointment
+  @Mutation(() => Appointments)
+  async createAppointment(
+    @Args('createAppointmentDto') createAppointmentDto: CreateAppointmentDto,
+  ): Promise<Appointments> {
+    return this.appointmentsService.create(createAppointmentDto);
+  }
+
+  // Retrieve all appointments
+  @Query(() => [Appointments], { name: 'getAllAppointments' })
+  async getAllAppointments(): Promise<Appointments[]> {
     return this.appointmentsService.findAll();
   }
 
-  @Query(() => Appointments, { name: 'appointments' })
-  findOne(@Args('appointment_id', { type: () => Int }) appointment_id: number): Promise<Appointments> {
-    return this.appointmentsService.findOne(appointment_id);
-  }
-
-  @Mutation(() => Appointments)
-  createAppointments(
-    @Args('createAppointmentsInput') createAppointmentsInput: CreateAppointmentsInput,
+  // Find a single appointment by ID
+  @Query(() => Appointments, { name: 'getAppointmentById' })
+  async getAppointmentById(
+    @Args('appointment_id', { type: () => Int }) appointment_id: number,
   ): Promise<Appointments> {
-    return this.appointmentsService.create(createAppointmentsInput);
+    try {
+      return await this.appointmentsService.findOne(appointment_id);
+    } catch (error) {
+      throw new NotFoundException(`Appointment with ID ${appointment_id} not found`);
+    }
   }
 
+  // Update an existing appointment
   @Mutation(() => Appointments)
-  updateAppointments(@Args('updateAppointmentsInput') updateAppointmentsInput: UpdateAppointmentsInput): Promise<Appointments> {
-    return this.appointmentsService.update(updateAppointmentsInput);
+  async updateAppointment(
+    @Args('updateAppointmentDto') updateAppointmentDto: UpdateAppointmentDto,
+  ): Promise<Appointments> {
+    return this.appointmentsService.update(updateAppointmentDto);
   }
 
+  // Remove an appointment
   @Mutation(() => Boolean)
-  removeAppointments(@Args('appointment_id', { type: () => Int }) appointment_id: number): Promise<boolean> {
+  async removeAppointment(
+    @Args('appointment_id', { type: () => Int }) appointment_id: number,
+  ): Promise<boolean> {
     return this.appointmentsService.remove(appointment_id);
-
-}
+  }
 }

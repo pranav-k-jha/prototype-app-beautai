@@ -1,54 +1,19 @@
-import { InputType, Field, Int } from '@nestjs/graphql';
-import { IsOptional, IsString, IsDecimal, IsInt } from 'class-validator';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateBusinessInput {
-  @Field(() => Int)
-  @IsInt()
-  provider_id?: number;
+  @Field({ nullable: true })
+  business_name?: string;
 
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
-  provider_name?: string;
+  @Field({ nullable: true })
+  email?: string;
 
-  @Field(() => Number, { nullable: true })
-  @IsOptional()
-  @IsDecimal()
-  rating?: number;
+  @Field({ nullable: true })
+  phone_number?: string;
 
-  @Field(() => Int, { nullable: true })
-  @IsOptional()
-  @IsInt()
-  total_reviews?: number;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
-  opening_time?: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
-  closing_time?: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
+  @Field({ nullable: true })
   address?: string;
 
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
-  city?: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
-  country?: string;
-
-  @Field(() => Number, { nullable: true })
-  @IsOptional()
-  @IsDecimal()
-  distance_km?: number;
+  @Field({ nullable: true })
+  operating_hours?: string;
 }

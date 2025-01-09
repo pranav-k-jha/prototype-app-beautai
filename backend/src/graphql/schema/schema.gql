@@ -2,19 +2,40 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Business {
-  provider_id: Int!
-  provider_name: String!
-  rating: Float
-  total_reviews: Int
-  opening_time: String
-  closing_time: String
-  address: String
-  city: String
-  country: String
-  distance_km: Float
+type User {
+  user_id: Int!
+  name: String!
+  username: String!
+  email: String!
+}
+
+type Appointments {
+  appointment_id: Int!
+  service: Service
+  user: User
+  status: Status!
+  rating: Int
+}
+
+"""The status of an appointment"""
+enum Status {
+  COMPLETED
+  PENDING
+  CANCELLED
+  RESCHEDULED
+  NO_SHOW
+}
+
+type Service {
+  service_id: Int!
+  service_name: String!
+  service_type: String!
+  description: String
+  price: Float!
+  business: Business!
   created_at: DateTime!
   updated_at: DateTime!
+  appointments: [Appointments!]
 }
 
 """
@@ -22,71 +43,126 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type User {
-  user_id: Int!
+type Business {
+  business_id: Int!
+  business_name: String!
+  email: String!
+  phone_number: String!
+  address: String!
+  operating_hours: String!
+  services: [Service!]!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type SignupResponse {
+  user_id: Float!
   name: String!
+  username: String!
   email: String!
 }
 
 type LoginResponse {
   access_token: String!
-  user: User!
+  refresh_token: String!
+  user: SignupResponse!
 }
 
 type Query {
-  businesses: [Business!]!
-  business(provider_id: Int!): Business!
+  getAllBusinesses: [Business!]!
+  getBusinessById(business_id: Int!): Business!
+  findAllServices: [Service!]!
+  findServiceById(service_id: Int!): Service!
+  getAllAppointments: [Appointments!]!
+  getAppointmentById(appointment_id: Int!): Appointments!
   users: [User!]!
-  user(email: String!): User!
+  user(identifier: String!): User!
 }
 
 type Mutation {
-  createBusiness(createBusinessInput: CreateBusinessInput!): Business!
-  updateBusiness(updateBusinessInput: UpdateBusinessInput!): Business!
-  deleteBusiness(provider_id: Int!): Boolean!
-  createUser(createUserInput: CreateUserInput!): User!
-  signup(signupUserInput: SignupUserInput!): User!
+  createNewBusiness(createBusinessInput: CreateBusinessInput!): Business!
+  updateExistingBusiness(business_id: Int!, updateBusinessInput: UpdateBusinessInput!): Business!
+  deleteBusinessById(business_id: Int!): Boolean!
+  createService(createServicesInput: CreateServicesInput!): Service!
+  updateService(updateServicesInput: UpdateServicesInput!): Service!
+  removeService(service_id: Int!): Boolean!
+  deleteServiceById(service_id: Int!): Boolean!
+  createAppointment(createAppointmentDto: CreateAppointmentDto!): Appointments!
+  updateAppointment(updateAppointmentDto: UpdateAppointmentDto!): Appointments!
+  removeAppointment(appointment_id: Int!): Boolean!
+  createUser(signupUserInput: SignupUserInput!): User!
+  updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): Boolean!
+  resetPassword(identifier: String!, newPassword: String!): Boolean!
   login(loginUserInput: LoginUserInput!): LoginResponse!
+  signup(signupUserInput: SignupUserInput!): LoginResponse!
+  refreshTokens(refreshToken: String!): LoginResponse!
 }
 
 input CreateBusinessInput {
-  provider_name: String!
-  rating: Float
-  total_reviews: Int
-  opening_time: String
-  closing_time: String
-  address: String
-  city: String
-  country: String
-  distance_km: Float
+  business_name: String!
+  email: String!
+  phone_number: String!
+  address: String!
+  operating_hours: String
 }
 
 input UpdateBusinessInput {
-  provider_id: Int!
-  provider_name: String
-  rating: Float
-  total_reviews: Int
-  opening_time: String
-  closing_time: String
+  business_name: String
+  email: String
+  phone_number: String
   address: String
-  city: String
-  country: String
-  distance_km: Float
+  operating_hours: String
 }
 
-input CreateUserInput {
-  name: String!
-  email: String!
-  password: String!
+input CreateServicesInput {
+  service_name: String!
+  service_description: String
+  price: Float!
+  service_type: String!
+  business_id: Int!
+}
+
+input UpdateServicesInput {
+  service_name: String
+  service_description: String
+  price: Float
+  service_type: String
+  business_id: Int
+  service_id: Float!
+}
+
+input CreateAppointmentDto {
+  service_id: Int!
+  status: Status! = PENDING
+  rating: Int
+  user_id: Int
+}
+
+input UpdateAppointmentDto {
+  appointment_id: Int!
+  status: Status
+  rating: Int
+  service_id: Int
+  user_id: Int
 }
 
 input SignupUserInput {
   name: String!
   email: String!
+  username: String!
   password: String!
 }
 
+input UpdateUserInput {
+  name: String
+  username: String
+  email: String
+  password: String
+  user_id: Float!
+}
+
 input LoginUserInput {
-  email: String!
+  emailOrUsername: String!
   password: String!
 }

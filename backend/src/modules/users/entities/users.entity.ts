@@ -1,5 +1,5 @@
-import { ObjectType, Field, Int, registerEnumType, ID } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn, Index } from 'typeorm';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 @ObjectType()
@@ -12,11 +12,14 @@ export class User {
   @Field()
   name: string;
 
-  @Index()
+  @Column({ length: 255, unique: true })
+  @Field()
+  username: string;
+
   @Column({ length: 255, unique: true })
   @Field()
   email: string;
 
-  @Column()
+  @Column({ length: 255 })
   password: string;
 }

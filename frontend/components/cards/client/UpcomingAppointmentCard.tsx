@@ -35,8 +35,8 @@ const UpcomingAppointmentCard: React.FC<UpcomingAppointmentProps> = ({
   companyLogo,
   companyTitle,
   backgroundImage,
-  width = "352",
-  height = "192",
+  width = 352,
+  height = 192,
 }) => {
   const router = useRouter();
 

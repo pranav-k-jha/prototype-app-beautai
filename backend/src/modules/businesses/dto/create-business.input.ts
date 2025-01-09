@@ -1,31 +1,26 @@
-import { Field, Float, Int, InputType } from "@nestjs/graphql";
+import { Field, InputType } from '@nestjs/graphql';
+import { IsString, IsOptional, IsEmail } from 'class-validator';
 
 @InputType()
 export class CreateBusinessInput {
   @Field()
-  provider_name: string;
+  @IsString()
+  business_name: string;
 
-  @Field(() => Float, { nullable: true })
-  rating?: number;
+  @Field()
+  @IsEmail()
+  email: string;
 
-  @Field(() => Int, { nullable: true })
-  total_reviews?: number;
+  @Field()
+  @IsString()
+  phone_number: string;
 
-  @Field({ nullable: true })
-  opening_time?: string;
-
-  @Field({ nullable: true })
-  closing_time?: string;
-
-  @Field({ nullable: true })
-  address?: string;
+  @Field()
+  @IsString()
+  address: string;
 
   @Field({ nullable: true })
-  city?: string;
-
-  @Field({ nullable: true })
-  country?: string;
-
-  @Field(() => Float, { nullable: true })
-  distance_km?: number;
+  @IsOptional()
+  @IsString()
+  operating_hours?: string;
 }

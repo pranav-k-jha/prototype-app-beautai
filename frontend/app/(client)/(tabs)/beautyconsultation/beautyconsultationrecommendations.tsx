@@ -1,79 +1,118 @@
-import {
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-} from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { View, FlatList, StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
-import Slide from "@/components/slides/Slide";
+import {
+  PADDING_LAYOUT,
+  SECTION_DISTANCE,
+  TAB_BAR_HEIGHT,
+} from "@/constants/Layout";
+import { ThemedText } from "@/components/ThemedText";
+import CompanySignature from "@/components/UserSignature/CompanySignature";
+import RecommendationTreatmentCard from "@/components/cards/client/RecommendationTreatmentCard";
+import { useLocalSearchParams } from "expo-router";
 
 const beautyconsultationrecommendations = () => {
-  const slides = [
-    <Slide
-      id={1}
-      key={1}
-      image={require("@/assets/images/recommendation1.png")}
-      url="/assets/images/recommendation1.png"
-      width={353}
-      height={240}
-    />,
-    <Slide
-      id={2}
-      key={2}
-      image={require("@/assets/images/recommendation2.png")}
-      url="/assets/images/recommendation2.png"
-      width={353}
-      height={240}
-    />,
+  const params = useLocalSearchParams();
 
-    <Slide
-      id={3}
-      key={3}
-      image={require("@/assets/images/recommendation3.png")}
-      url="/assets/images/recommendation3.png"
-      width={353}
-      height={240}
-    />,
+  let answers: string[][] = [];
+  if (typeof params.answers === "string") {
+    answers = JSON.parse(params.answers);
+  } else {
+    console.error("Answers are not a valid string!");
+  }
+
+  console.log(answers);
+
+  const recommendations = [
+    {
+      id: "1",
+      treatmentType: "injections",
+      backgroundImage: require("@/assets/images/recommendation-1.png"),
+      treatment: "lip filler",
+      companyTitle: "Derma Care Clinic",
+      companyLogo: require("@/assets/images/companyLogo1.png"),
+      address: "123 Lincon St., Basus, Nigeria",
+      distance: "5.4 km",
+    },
+
+    {
+      id: "2",
+      treatmentType: "laser",
+      backgroundImage: require("@/assets/images/recommendation-2.png"),
+      treatment: "laser hair removal",
+      companyTitle: "Derma Care Clinic",
+      companyLogo: require("@/assets/images/companyLogo1.png"),
+      address: "123 Lincon St., Basus, Nigeria",
+      distance: "5.4 km",
+    },
+
+    {
+      id: "3",
+      treatmentType: "injections",
+      backgroundImage: require("@/assets/images/recommendation-3.png"),
+      treatment: "lip filler",
+      companyTitle: "Derma Care Clinic",
+      companyLogo: require("@/assets/images/companyLogo1.png"),
+      address: "123 Lincon St., Basus, Nigeria",
+      distance: "5.4 km",
+    },
   ];
 
   return (
     <ThemedView style={styles.container}>
-      {/* Company Signature */}
-      <View style={styles.signature}>
-        <Image
-          source={require("@/assets/images/BeautAI.png")} // Replace with the path to your logo
-          style={styles.logo}
-          resizeMode="contain" // Ensure the image is fully visible
-        />
-        <View style={styles.textContainer}>
-          <Text style={styles.heading}>BEAUTY CONSULTATION</Text>
-          <Text style={styles.subheading}>
-            GET PERSONALIZED RECOMMENDATIONS
-          </Text>
-        </View>
-      </View>
+      <FlatList
+        data={["header", "recommendations"]}
+        renderItem={({ item }) => {
+          switch (item) {
+            case "header":
+              return (
+                <View style={styles.section}>
+                  <View style={styles.header}>
+                    <CompanySignature />
+                  </View>
+                </View>
+              );
+            case "recommendations":
+              return (
+                <View style={styles.section}>
+                  <View style={styles.headerContainer}>
+                    <ThemedText type="sectionHeader">
+                      recommended treatments
+                    </ThemedText>
+                  </View>
 
-      {/* Providers Section */}
-      <View style={styles.providersSection}>
-        {/* Header */}
-        <Text style={styles.providersHeader}>RECOMMENDED TREATMENTS</Text>
-
-        {/* Scrollable Slide List */}
-        <ScrollView
-          contentContainerStyle={styles.slidesContainer}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Example slides */}
-          {slides.map((slide, index) => (
-            <View key={index} style={styles.slide}>
-              {slide}
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+                  <FlatList
+                    data={recommendations}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                      <RecommendationTreatmentCard
+                        id={item.id}
+                        backgroundImage={item.backgroundImage} // Replace with your image path
+                        treatmentType={item.treatmentType}
+                        companyLogo={item.companyLogo} // Replace with your image path
+                        companyTitle={item.companyTitle}
+                        onBookmarkPress={() => {}}
+                        treatment={item.treatment}
+                        address={item.address}
+                        distance={item.distance}
+                        // width={352}
+                        // height={240}
+                      />
+                    )}
+                    showsVerticalScrollIndicator={false} // To hide vertical scroll indicator
+                    ItemSeparatorComponent={() => (
+                      <View style={{ height: 20 }} /> // Adjusted height for vertical separation
+                    )}
+                  />
+                </View>
+              );
+            default:
+              return null;
+          }
+        }}
+        contentContainerStyle={styles.listContent}
+        keyExtractor={(item, index) => index.toString()}
+      />
     </ThemedView>
   );
 };
@@ -83,74 +122,27 @@ export default beautyconsultationrecommendations;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "5%",
+    padding: PADDING_LAYOUT,
+    marginBottom: TAB_BAR_HEIGHT,
   },
-  signature: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: "5%",
-    marginTop: "15%",
-    width: "100%",
+  header: {
+    marginTop: SECTION_DISTANCE,
+    marginBottom: 30,
   },
-  logo: {
-    width: "15%", // 15% of the parent container's width
-    height: undefined, // Maintain aspect ratio
-    aspectRatio: 1,
-    marginRight: "3%",
+  section: {
+    marginBottom: SECTION_DISTANCE,
+  },
+  listContent: {
+    paddingBottom: 20,
   },
   textContainer: {
-    flexDirection: "column",
-    width: "80%",
-    height: "100%",
+    flex: 1,
   },
-  heading: {
-    fontFamily: "Instrument Sans",
-    fontStyle: "normal",
-    fontWeight: "600",
-    fontSize: 16,
-    lineHeight: 27,
-    color: "black",
-  },
-  subheading: {
-    fontFamily: "Instrument Sans",
-    fontStyle: "normal",
-    fontWeight: "400",
-    fontSize: 10,
-    lineHeight: 16,
-    color: "black",
-    opacity: 0.3,
-  },
-  providersSection: {
-    flex: 1, // Ensures the section takes up available vertical space
-    width: "100%",
-    marginTop: "10%",
+
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-  },
-  providersHeader: {
-    width: "100%", // Use a percentage for width
-    fontFamily: "Instrument Sans",
-    fontStyle: "normal",
-    fontWeight: "700",
-    fontSize: 13, // 4.5% of the screen width
-    lineHeight: 24, // Approx. 1.3x font size
-    textAlign: "left",
-    color: "black",
-    marginBottom: "5%", // Space between the header and slides
-  },
-  slidesContainer: {
-    width: "100%", // Full width of the container
-    alignItems: "center",
-    paddingBottom: "5%", // Add spacing at the bottom for better scrolling experience
-  },
-  slide: {
-    width: 353, // Approx. 90% of the screen width
-    height: 240, // Fixed height for the slide
-    backgroundColor: "#e0e0e0", // Placeholder background
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 15, // Space between each slide
+    marginBottom: 10,
   },
 });

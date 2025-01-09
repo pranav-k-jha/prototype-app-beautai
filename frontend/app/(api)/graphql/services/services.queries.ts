@@ -1,20 +1,21 @@
-import { useQuery, gql } from '@apollo/client';
-import { SERVICES_FRAGMENT } from '@/app/(api)/graphql/services/services.fragments';
+import { gql } from '@apollo/client';
+import { SERVICE_FRAGMENT } from './services.fragments';
 
-export const GET_SERVICE_BY_ID = gql`
-  query GetServiceById($service_id: Int!) {
-    services(service_id: $service_id) {
-      ...ServicesFragment
+// Service Queries
+export const FIND_ALL_SERVICES = gql`
+  query FindAllServices {
+    findAllServices {
+      ...ServiceFragment
     }
   }
-  ${SERVICES_FRAGMENT}
+  ${SERVICE_FRAGMENT}
 `;
 
-
-
-
-
-
-
-
-
+export const FIND_SERVICE_BY_ID = gql`
+  query FindServiceById($service_id: Int!) {
+    findServiceById(service_id: $service_id) {
+      ...ServiceFragment
+    }
+  }
+  ${SERVICE_FRAGMENT}
+`;

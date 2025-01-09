@@ -1,4 +1,5 @@
 import CircularButton from "@/components/buttons/CircularButton";
+import { ThemedItem } from "@/components/ThemedItem";
 import React from "react";
 import {
   View,
@@ -25,11 +26,11 @@ const SavedProviderCard: React.FC<SavedProviderCardProps> = ({
   companyLogo,
   companyTitle,
   backgroundImage,
-  width = "352",
-  height = "192",
+  width = 169,
+  height = 192,
 }) => {
   return (
-    <View
+    <ThemedItem
       style={[
         styles.card,
         {
@@ -59,7 +60,7 @@ const SavedProviderCard: React.FC<SavedProviderCardProps> = ({
           <Text style={styles.companyTitle}>{companyTitle}</Text>
         </View>
       </ImageBackground>
-    </View>
+    </ThemedItem>
   );
 };
 
@@ -79,28 +80,31 @@ const styles = StyleSheet.create({
   },
   bookmarkButton: {
     position: "absolute",
-    top: 10,
-    right: 10,
-    borderRadius: 20,
-    padding: 5,
+    top: "5%",
+    right: "5%",
   },
   companyInfo: {
     position: "absolute",
-    bottom: 10,
-    left: 10,
-    alignItems: "center",
+    bottom: "5%",
+    left: "5%",
+    alignItems: "flex-start",
   },
   companyLogo: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     borderRadius: 20,
-    marginBottom: 5,
+    marginBottom: "2%",
   },
   companyTitle: {
     fontSize: 14,
     color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
+    textAlign: "left",
+    flexWrap: "wrap",
+    maxWidth: 120,
+    fontWeight: "400",
+    lineHeight: 20,
+    letterSpacing: -0.02,
+    textTransform: "uppercase",
   },
 });
 

@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEmail, IsString, MinLength, Validate } from 'class-validator';
+import { IsEmail, IsString, MinLength, Matches } from 'class-validator';
 
 @InputType()
 export class SignupUserInput {
@@ -11,6 +11,14 @@ export class SignupUserInput {
   @Field()
   @IsEmail({}, { message: 'Invalid email address.' })
   email: string;
+
+  @Field()
+  @IsString()
+  @MinLength(3, { message: 'Username must be at least 3 characters long.' })
+  @Matches(/^[a-zA-Z0-9_]+$/, {
+    message: 'Username can only contain letters, numbers, and underscores.',
+  })
+  username: string;
 
   @Field()
   @IsString()

@@ -1,14 +1,29 @@
 import { gql } from '@apollo/client';
-import { SERVICES_FRAGMENT } from '@/app/(api)/graphql/services/services.fragments';
+import { SERVICE_FRAGMENT } from './services.fragments';
 
-//TODO These Functions defined in the mutations/queries of the frontend and
-//Rewritten into gql code are mapped and retrieved from the backend resolvers.
 
+// Service Mutations
 export const CREATE_SERVICE = gql`
-  mutation CreateServices($input: CreateServiceInput!) {
-    createService(input: $input) {
-      ...ServicesFragment
+  mutation CreateService($createServicesInput: CreateServicesInput!) {
+    createService(createServicesInput: $createServicesInput) {
+      ...ServiceFragment
     }
   }
-  ${SERVICES_FRAGMENT}
+  ${SERVICE_FRAGMENT}
 `;
+
+export const UPDATE_SERVICE = gql`
+  mutation UpdateService($updateServicesInput: UpdateServicesInput!) {
+    updateService(updateServicesInput: $updateServicesInput) {
+      ...ServiceFragment
+    }
+  }
+  ${SERVICE_FRAGMENT}
+`;
+
+export const DELETE_SERVICE = gql`
+  mutation RemoveService($service_id: Int!) {
+    removeService(service_id: $service_id)
+  }
+`;
+

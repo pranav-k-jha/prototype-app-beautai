@@ -1,48 +1,37 @@
-import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Field, ObjectType, Int } from '@nestjs/graphql';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Service } from '../../services/entities/services.entity';  // Adjust import path as needed
 
 @Entity('businesses')
 @ObjectType()
 export class Business {
   @PrimaryGeneratedColumn()
   @Field(() => Int)
-  provider_id: number;
+  business_id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   @Field()
-  provider_name: string;
+  business_name: string;
 
-  @Column({ type: 'decimal', precision: 3, scale: 2, nullable: true })
-  @Field(() => Float, { nullable: true })
-  rating?: number;
+  @Column({ type: 'varchar', length: 255 })
+  @Field()
+  email: string;
 
-  @Column({ type: 'int', nullable: true })
-  @Field(() => Int, { nullable: true })
-  total_reviews?: number;
+  @Column({ type: 'varchar', length: 255 })
+  @Field()
+  phone_number: string;
 
-  @Column({ type: 'time', nullable: true })
-  @Field({ nullable: true })
-  opening_time?: string;
+  @Column({ type: 'varchar', length: 255 })
+  @Field()
+  address: string;
 
-  @Column({ type: 'time', nullable: true })
-  @Field({ nullable: true })
-  closing_time?: string;
+  @Column({ type: 'varchar', length: 255 })
+  @Field()
+  operating_hours: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  address?: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  city?: string;
-
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  country?: string;
-
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
-  @Field(() => Float, { nullable: true })
-  distance_km?: number;
+  @OneToMany(() => Service, (service) => service.business)
+  @Field(() => [Service])
+  services: Service[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @Field()

@@ -1,32 +1,36 @@
-import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Field, ObjectType, Int, Float } from '@nestjs/graphql';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Business } from '../../businesses/entities/business.entity';  // Adjust import path as needed
+import { Appointments } from '../../appointments/entities/appointments.entity';  // Adjust import path as needed
+
 
 @Entity('services')
 @ObjectType()
-export class Services {
+export class Service {
   @PrimaryGeneratedColumn()
   @Field(() => Int)
   service_id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   @Field()
   service_name: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   @Field()
-  service_category: string;
+  service_type: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   @Field({ nullable: true })
-  service_description?: string
+  description?: string;
 
-  @Column({ type: 'time', nullable: true })
-  @Field({ nullable: true })
-  duration: string;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2})
+  @Column({ type: 'float' })  // Added price field with float type
   @Field(() => Float)
   price: number;
+
+  @ManyToOne(() => Business, (business) => business.services)
+  @JoinColumn({ name: 'business_id' })
+  @Field(() => Business)
+  business: Business;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @Field()
@@ -39,4 +43,9 @@ export class Services {
   })
   @Field()
   updated_at: Date;
+
+  @OneToMany(() => Appointments, (appointments) => appointments.service)
+  @Field(() => [Appointments], { nullable: true })
+  appointments?: Appointments[];  // One-to-many relationship with Appointments
+
 }

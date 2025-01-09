@@ -7,7 +7,9 @@ import {
   SimpleLineIcons,
   AntDesign,
   MaterialCommunityIcons,
+  FontAwesome,
 } from "@expo/vector-icons";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type IconType =
   | "notifications"
@@ -123,7 +125,13 @@ const CircularButton: React.FC<CircularButtonProps> = ({
 
       // save buttons
       case "bookmark":
-        return <Feather name="bookmark" size={size * 0.5} color={iconColor} />;
+        return (
+          <FontAwesome
+            name="bookmark"
+            size={size * 0.5}
+            color={useThemeColor({}, "highlighted")}
+          />
+        );
 
       default:
         return null;

@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Business } from './entities/business.entity';
-import { CreateBusinessInput } from './dto/create-business.input'; 
-import { UpdateBusinessInput } from './dto/update-business.input'; 
+import { CreateBusinessInput } from './dto/create-business.input';
+import { UpdateBusinessInput } from './dto/update-business.input';
 
 @Injectable()
 export class BusinessesService {
@@ -12,39 +12,46 @@ export class BusinessesService {
     private businessRepository: Repository<Business>,
   ) {}
 
-  create(createBusinessInput: CreateBusinessInput): Promise<Business> {
+  // Create a new business
+  async create(createBusinessInput: CreateBusinessInput): Promise<Business> {
     const newBusiness = this.businessRepository.create(createBusinessInput);
-    return this.businessRepository.save(newBusiness);
+    return await this.businessRepository.save(newBusiness);
   }
 
-  findAll(): Promise<Business[]> {
+
+  
+  // Retrieve all businesses
+  async findAll(): Promise<Business[]> {
     return this.businessRepository.find();
   }
 
-  async findOne(provider_id: number): Promise<Business> {
+  // Retrieve a business by its ID
+  async findOne(business_id: number): Promise<Business> {
     try {
-      return await this.businessRepository.findOneOrFail({ where: { provider_id } });
+      return await this.businessRepository.findOneOrFail({ where: { business_id } });
     } catch (error) {
-      throw new NotFoundException(`Business with ID ${provider_id} not found.`);
+      throw new NotFoundException(`Business with ID ${business_id} not found.`);
     }
   }
 
-  async update(provider_id: number, updateBusinessInput: UpdateBusinessInput): Promise<Business> {
-    const business = await this.businessRepository.findOne({ where: { provider_id } });
-    
+  // Update a business by its ID
+  async update(business_id: number, updateBusinessInput: UpdateBusinessInput): Promise<Business> {
+    const business = await this.businessRepository.findOne({ where: { business_id } });
+
     if (!business) {
-      throw new NotFoundException(`Business with ID ${provider_id} not found.`);
+      throw new NotFoundException(`Business with ID ${business_id} not found.`);
     }
 
-    Object.assign(business, updateBusinessInput); 
-    return this.businessRepository.save(business); 
+    Object.assign(business, updateBusinessInput); // Update the business with the new data
+    return this.businessRepository.save(business); // Save the updated business
   }
 
-  async delete(provider_id: number): Promise<boolean> {
-    const result = await this.businessRepository.delete(provider_id);
+  // Delete a business by its ID
+  async delete(business_id: number): Promise<boolean> {
+    const result = await this.businessRepository.delete(business_id);
     if (result.affected === 0) {
-      throw new NotFoundException(`Business with ID ${provider_id} not found.`);
+      throw new NotFoundException(`Business with ID ${business_id} not found.`);
     }
-    return true;
+    return true; // Return true if the deletion was successful
   }
 }

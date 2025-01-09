@@ -4,7 +4,7 @@ import { setContext } from "@apollo/client/link/context";
 import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const LOCAL_SYSTEM_IP_ADDRESS = "192.168.0.90"; //check your local IP
+const LOCAL_SYSTEM_IP_ADDRESS = "192.168.0.94"; //check your local IP
 const PORT = "3000";
 
 const httpLink = new HttpLink({
