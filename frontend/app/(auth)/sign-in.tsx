@@ -13,7 +13,6 @@ import { BlurView } from "expo-blur";
 import RoundedButton from "@/components/buttons/RoundedButton";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import * as SecureStore from "expo-secure-store";
 import { useRouter } from "expo-router";
 
 const SignIn = () => {
@@ -44,13 +43,12 @@ const SignIn = () => {
     } catch (err) {
       // Handle login errors
       console.error("Login Error:", err);
-      setError("Login failed. Please try again.");
+      setError("Email or password is incorrect");
     }
   };
   const handleGoogleLogin = () => {
     // Replace with actual Google login implementation
-    alert("Google Login Placeholder");
-    router.replace("/(business)/(tabs)");
+    alert("Google login not implemented yet");
   };
 
   const handleSignUpNavigation = () => {
@@ -91,7 +89,7 @@ const SignIn = () => {
               style={styles.forgotPasswordLink}
               onPress={() => router.push("/(auth)/forgot-password")}
             >
-              <Text style={styles.forgotText}>Forgot Password?</Text>
+              <Text style={styles.forgotText}>FORGOT PASSWORD?</Text>
             </TouchableOpacity>
           </View>
 
@@ -108,7 +106,7 @@ const SignIn = () => {
               passiveColor="#d3d3d3" // Light gray for a softer inactive state
               style={styles.toggleButton} // Optional: Add custom styling for the button
             />
-            <Text style={styles.rememberMeText}>Remember Me</Text>
+            <Text style={styles.rememberMeText}>REMEMBER ME</Text>
           </View>
 
           {/* 4. Buttons Section */}

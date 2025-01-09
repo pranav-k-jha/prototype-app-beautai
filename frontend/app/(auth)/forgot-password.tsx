@@ -80,7 +80,7 @@ const ForgotPassword = () => {
             style={styles.button}
             onPress={handleIdentifierSubmit}
           >
-            <Text style={styles.buttonText}>Continue</Text>
+            <Text style={styles.buttonText}>CONTINUE</Text>
           </TouchableOpacity>
         </>
       )}
@@ -102,7 +102,7 @@ const ForgotPassword = () => {
             secureTextEntry
           />
           <TouchableOpacity style={styles.button} onPress={handlePasswordReset}>
-            <Text style={styles.buttonText}>Reset Password</Text>
+            <Text style={styles.buttonText}>RESET PASSWORD</Text>
           </TouchableOpacity>
         </>
       )}
