@@ -23,17 +23,20 @@ describe('ServicesService', () => {
 
   const createServiceInput: CreateServicesInput = {
     service_name: 'Web Development',
-    service_description: 'Website development services',
+    description: 'Website development services',
     price: 500.0,
-    service_type : "Test Service",
-    business_id: 1
+    business_id: 1,
+    category: 'aesthetics',
+    invasiveness: 'Low',
+    concerns: 'Standard web development concerns',
+    duration: 60,
   };
 
   const updateServiceInput: UpdateServicesInput = {
     service_id: 1,
     service_name: 'Updated Web Development',
     price: 600.0,
-    business_id: 1
+    business_id: 1,
   };
 
   beforeEach(async () => {
@@ -82,11 +85,15 @@ describe('ServicesService', () => {
     it('should return a service by service_id', async () => {
       const result = await service.findOne(1);
       expect(result).toEqual(mockService);
-      expect(repository.findOneOrFail).toHaveBeenCalledWith({ where: { service_id: 1 } });
+      expect(repository.findOneOrFail).toHaveBeenCalledWith({
+        where: { service_id: 1 },
+      });
     });
 
     it('should throw NotFoundException if service not found', async () => {
-      jest.spyOn(repository, 'findOneOrFail').mockRejectedValueOnce(new NotFoundException());
+      jest
+        .spyOn(repository, 'findOneOrFail')
+        .mockRejectedValueOnce(new NotFoundException());
       try {
         await service.findOne(999); // non-existing ID
       } catch (error) {
@@ -99,12 +106,16 @@ describe('ServicesService', () => {
     it('should update a service', async () => {
       const result = await service.update(updateServiceInput);
       expect(result).toEqual(mockService);
-      expect(repository.findOneOrFail).toHaveBeenCalledWith({ where: { service_id: 1 } });
+      expect(repository.findOneOrFail).toHaveBeenCalledWith({
+        where: { service_id: 1 },
+      });
       expect(repository.save).toHaveBeenCalledWith(mockService);
     });
 
     it('should throw NotFoundException if service not found', async () => {
-      jest.spyOn(repository, 'findOneOrFail').mockRejectedValueOnce(new NotFoundException());
+      jest
+        .spyOn(repository, 'findOneOrFail')
+        .mockRejectedValueOnce(new NotFoundException());
       try {
         await service.update(updateServiceInput); // non-existing ID
       } catch (error) {
@@ -119,14 +130,14 @@ describe('ServicesService', () => {
       expect(result).toBe(true);
       expect(repository.delete).toHaveBeenCalledWith(1);
     });
-  
+
     it('should throw NotFoundException if service not found', async () => {
       // Mocking delete to return a DeleteResult with the expected structure
       jest.spyOn(repository, 'delete').mockResolvedValueOnce({
         affected: 0,
         raw: [], // raw is required in DeleteResult, even if it's an empty array or object
       });
-  
+
       try {
         await service.remove(999); // non-existing ID
       } catch (error) {
@@ -134,5 +145,4 @@ describe('ServicesService', () => {
       }
     });
   });
-  
 });

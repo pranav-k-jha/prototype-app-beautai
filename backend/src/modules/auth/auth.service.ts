@@ -10,7 +10,6 @@ import { JwtService } from '@nestjs/jwt';
 import { SignupUserInput } from './dto/signup-user.input';
 import { LoginResponse } from './dto/login-response';
 import { LoginUserInput } from './dto/login-user.input';
-import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -153,12 +152,6 @@ export class AuthService {
       },
     };
   }
-
-  // Stores password reset tokens with expiration
-  private passwordResetTokens: Map<
-    string,
-    { token: string; expiresAt: number }
-  > = new Map();
 
   /**
    * Reset user's password using token

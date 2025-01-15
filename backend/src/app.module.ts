@@ -3,15 +3,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ConfigModule } from '@nestjs/config';
 import { join } from 'path';
-import { BusinessModule } from './modules/businesses/businesses.module';
+import { BusinessesModule } from './modules/businesses/businesses.module';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UsersModule } from './modules/users/users.module';
 import { DataSource } from 'typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { AppService } from './app.service';
 import { ServicesModule } from './modules/services/services.module';
-import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { ConfigService } from '@nestjs/config';
+import { PreferencesModule } from './modules/preferences/preferences.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -53,11 +53,12 @@ import * as Joi from 'joi';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), process.env.GRAPHQL_SCHEMA_PATH),
     }),
-    BusinessModule,
+    BusinessesModule,
     ServicesModule,
-    AppointmentsModule,
     UsersModule,
     AuthModule,
+    PreferencesModule,
+    ServicesModule,
   ],
   providers: [AppService],
 })

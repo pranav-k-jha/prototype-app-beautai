@@ -9,4 +9,4 @@ import { Business } from './entities/business.entity';
   providers: [BusinessesResolver, BusinessesService],
   exports: [BusinessesService],
 })
-export class BusinessModule {}
+export class BusinessesModule {}

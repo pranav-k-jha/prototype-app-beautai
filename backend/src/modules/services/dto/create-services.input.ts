@@ -1,5 +1,5 @@
 import { Field, Float, InputType, Int } from '@nestjs/graphql';
-import { Matches, IsString, IsOptional, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty, IsNumber } from 'class-validator';
 
 @InputType()
 export class CreateServicesInput {
@@ -11,19 +11,33 @@ export class CreateServicesInput {
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
-  service_description?: string;
+  description?: string;
 
   @Field(() => Float)
   @IsNumber()
   price: number;
 
+  @Field(() => Int)
+  @IsNumber()
+  duration: number;
+
   @Field()
   @IsString()
   @IsNotEmpty()
-  service_type: string;
+  category: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  invasiveness: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  concerns: string;
 
   @Field(() => Int)
   @IsNumber()
   @IsNotEmpty()
-  business_id: number;  // Only the business ID is needed for the relationship
+  business_id: number;
 }

@@ -2,40 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  user_id: Int!
-  name: String!
-  username: String!
-  email: String!
-}
-
-type Appointments {
-  appointment_id: Int!
-  service: Service
-  user: User
-  status: Status!
-  rating: Int
-}
-
-"""The status of an appointment"""
-enum Status {
-  COMPLETED
-  PENDING
-  CANCELLED
-  RESCHEDULED
-  NO_SHOW
-}
-
 type Service {
   service_id: Int!
-  service_name: String!
-  service_type: String!
-  description: String
-  price: Float!
+  business_id: Int!
   business: Business!
+  service_name: String!
+  invasiveness: String!
+  description: String
+  duration: Int
+  price: Float!
+  category: String
+  concerns: String
   created_at: DateTime!
   updated_at: DateTime!
-  appointments: [Appointments!]
 }
 
 """
@@ -55,6 +34,13 @@ type Business {
   updated_at: DateTime!
 }
 
+type User {
+  user_id: Int!
+  name: String!
+  username: String!
+  email: String!
+}
+
 type SignupResponse {
   user_id: Float!
   name: String!
@@ -68,15 +54,30 @@ type LoginResponse {
   user: SignupResponse!
 }
 
+type UserPreference {
+  user_id: String!
+  consent_to_camera: Boolean
+  face_scan_success: Boolean
+  selected_treatment: String
+  wellness_concerns: [String!]
+  aesthetic_concerns: [String!]
+  aging_concerns: [String!]
+  skin_concerns: [String!]
+  comfort_level: String
+  downtime_preference: String
+  budget_preference: String
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
 type Query {
   getAllBusinesses: [Business!]!
   getBusinessById(business_id: Int!): Business!
   findAllServices: [Service!]!
   findServiceById(service_id: Int!): Service!
-  getAllAppointments: [Appointments!]!
-  getAppointmentById(appointment_id: Int!): Appointments!
   users: [User!]!
   user(identifier: String!): User!
+  getUserPreference(user_id: String!): UserPreference
 }
 
 type Mutation {
@@ -87,9 +88,6 @@ type Mutation {
   updateService(updateServicesInput: UpdateServicesInput!): Service!
   removeService(service_id: Int!): Boolean!
   deleteServiceById(service_id: Int!): Boolean!
-  createAppointment(createAppointmentDto: CreateAppointmentDto!): Appointments!
-  updateAppointment(updateAppointmentDto: UpdateAppointmentDto!): Appointments!
-  removeAppointment(appointment_id: Int!): Boolean!
   createUser(signupUserInput: SignupUserInput!): User!
   updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): Boolean!
@@ -97,6 +95,8 @@ type Mutation {
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signupUserInput: SignupUserInput!): LoginResponse!
   refreshTokens(refreshToken: String!): LoginResponse!
+  createUserPreference(createUserPreferenceInput: CreateUserPreferenceInput!): UserPreference!
+  updateUserPreference(user_id: String!, updateUserPreferenceInput: UpdatePreferenceInput!): UserPreference!
 }
 
 input CreateBusinessInput {
@@ -117,34 +117,25 @@ input UpdateBusinessInput {
 
 input CreateServicesInput {
   service_name: String!
-  service_description: String
+  description: String
   price: Float!
-  service_type: String!
+  duration: Int!
+  category: String!
+  invasiveness: String!
+  concerns: String!
   business_id: Int!
 }
 
 input UpdateServicesInput {
   service_name: String
-  service_description: String
+  description: String
   price: Float
-  service_type: String
+  duration: Int
+  category: String
+  invasiveness: String
+  concerns: String
   business_id: Int
   service_id: Float!
-}
-
-input CreateAppointmentDto {
-  service_id: Int!
-  status: Status! = PENDING
-  rating: Int
-  user_id: Int
-}
-
-input UpdateAppointmentDto {
-  appointment_id: Int!
-  status: Status
-  rating: Int
-  service_id: Int
-  user_id: Int
 }
 
 input SignupUserInput {
@@ -165,4 +156,32 @@ input UpdateUserInput {
 input LoginUserInput {
   emailOrUsername: String!
   password: String!
+}
+
+input CreateUserPreferenceInput {
+  user_id: String!
+  consent_to_camera: Boolean
+  face_scan_success: Boolean
+  selected_treatment: String
+  wellness_concerns: [String!]
+  aesthetic_concerns: [String!]
+  aging_concerns: [String!]
+  skin_concerns: [String!]
+  comfort_level: String
+  downtime_preference: String
+  budget_preference: String
+}
+
+input UpdatePreferenceInput {
+  user_id: String
+  consent_to_camera: Boolean
+  face_scan_success: Boolean
+  selected_treatment: String
+  wellness_concerns: [String!]
+  aesthetic_concerns: [String!]
+  aging_concerns: [String!]
+  skin_concerns: [String!]
+  comfort_level: String
+  downtime_preference: String
+  budget_preference: String
 }

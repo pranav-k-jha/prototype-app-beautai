@@ -1,9 +1,16 @@
 import { Field, ObjectType, Int } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Service } from '../../services/entities/services.entity';  // Adjust import path as needed
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  Unique,
+} from 'typeorm';
+import { Service } from '../../services/entities/services.entity'; // Adjust import path as needed
 
 @Entity('businesses')
 @ObjectType()
+@Unique(['email'])
 export class Business {
   @PrimaryGeneratedColumn()
   @Field(() => Int)

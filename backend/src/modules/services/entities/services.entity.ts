@@ -1,15 +1,30 @@
 import { Field, ObjectType, Int, Float } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { Business } from '../../businesses/entities/business.entity';  // Adjust import path as needed
-import { Appointments } from '../../appointments/entities/appointments.entity';  // Adjust import path as needed
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+} from 'typeorm';
+import { Business } from '../../businesses/entities/business.entity'; // Adjust import path as needed
 
-
-@Entity('services')
 @ObjectType()
+@Unique(['service_name'])
+@Entity('services')
 export class Service {
   @PrimaryGeneratedColumn()
   @Field(() => Int)
   service_id: number;
+
+  @Column({ name: 'business_id' })
+  @Field(() => Int)
+  business_id: number;
+
+  @ManyToOne(() => Business, (business) => business.services)
+  @JoinColumn({ name: 'business_id' })
+  @Field(() => Business)
+  business: Business;
 
   @Column({ type: 'varchar', length: 255 })
   @Field()
@@ -17,20 +32,27 @@ export class Service {
 
   @Column({ type: 'varchar', length: 255 })
   @Field()
-  service_type: string;
+  invasiveness: string;
+
+  @Field(() => String, { nullable: true })
+  @Column({ type: 'text', nullable: true })
+  description?: string;
+
+  @Field(() => Int, { nullable: true })
+  @Column({ name: 'duration_minutes', nullable: true })
+  duration?: number;
+
+  @Field(() => Float)
+  @Column('decimal', { precision: 10, scale: 2 })
+  price: number;
+
+  @Field(() => String, { nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  category?: string;
 
   @Column({ type: 'text', nullable: true })
   @Field({ nullable: true })
-  description?: string;
-
-  @Column({ type: 'float' })  // Added price field with float type
-  @Field(() => Float)
-  price: number;
-
-  @ManyToOne(() => Business, (business) => business.services)
-  @JoinColumn({ name: 'business_id' })
-  @Field(() => Business)
-  business: Business;
+  concerns?: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @Field()
@@ -43,9 +65,4 @@ export class Service {
   })
   @Field()
   updated_at: Date;
-
-  @OneToMany(() => Appointments, (appointments) => appointments.service)
-  @Field(() => [Appointments], { nullable: true })
-  appointments?: Appointments[];  // One-to-many relationship with Appointments
-
 }

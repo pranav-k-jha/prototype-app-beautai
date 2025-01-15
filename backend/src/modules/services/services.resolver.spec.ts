@@ -10,8 +10,8 @@ describe('ServicesResolver', () => {
   let resolver: ServicesResolver;
   let service: ServicesService;
 
-   // Mock data for testing
-   const mockService = {
+  // Mock data for testing
+  const mockService = {
     service_id: 1,
     service_name: 'Web Development',
     service_description: 'Website development services',
@@ -22,17 +22,20 @@ describe('ServicesResolver', () => {
 
   const mockCreateServiceInput: CreateServicesInput = {
     service_name: 'Web Development',
-    service_description: 'Website development services',
+    description: 'Website development services',
     price: 500.0,
-    service_type : "Test Service",
-    business_id: 1
+    business_id: 1,
+    category: 'aesthetics',
+    invasiveness: 'Low',
+    concerns: 'Standard web development concerns',
+    duration: 60,
   };
 
   const mockUpdateServiceInput: UpdateServicesInput = {
     service_id: 1,
     service_name: 'Updated Web Development',
     price: 600.0,
-    business_id: 1
+    business_id: 1,
   };
 
   beforeEach(async () => {
