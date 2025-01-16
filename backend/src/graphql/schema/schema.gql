@@ -55,7 +55,7 @@ type LoginResponse {
 }
 
 type UserPreference {
-  user_id: String!
+  user_id: Int!
   consent_to_camera: Boolean
   face_scan_success: Boolean
   selected_treatment: String
@@ -77,7 +77,7 @@ type Query {
   findServiceById(service_id: Int!): Service!
   users: [User!]!
   user(identifier: String!): User!
-  getUserPreference(user_id: String!): UserPreference
+  getUserPreference(user_id: Float!): UserPreference
 }
 
 type Mutation {
@@ -96,7 +96,7 @@ type Mutation {
   signup(signupUserInput: SignupUserInput!): LoginResponse!
   refreshTokens(refreshToken: String!): LoginResponse!
   createUserPreference(createUserPreferenceInput: CreateUserPreferenceInput!): UserPreference!
-  updateUserPreference(user_id: String!, updateUserPreferenceInput: UpdatePreferenceInput!): UserPreference!
+  updateUserPreference(user_id: Float!, updateUserPreferenceInput: UpdatePreferenceInput!): UserPreference!
 }
 
 input CreateBusinessInput {
@@ -159,7 +159,7 @@ input LoginUserInput {
 }
 
 input CreateUserPreferenceInput {
-  user_id: String!
+  user_id: Int!
   consent_to_camera: Boolean
   face_scan_success: Boolean
   selected_treatment: String
@@ -173,7 +173,7 @@ input CreateUserPreferenceInput {
 }
 
 input UpdatePreferenceInput {
-  user_id: String
+  user_id: Int
   consent_to_camera: Boolean
   face_scan_success: Boolean
   selected_treatment: String

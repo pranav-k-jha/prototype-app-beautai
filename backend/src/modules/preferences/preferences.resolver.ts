@@ -18,14 +18,14 @@ export class PreferencesResolver {
 
   @Query(() => UserPreference, { nullable: true })
   async getUserPreference(
-    @Args('user_id') user_id: string,
+    @Args('user_id') user_id: number,
   ): Promise<UserPreference | null> {
     return this.preferencesService.findByUserId(user_id);
   }
 
   @Mutation(() => UserPreference)
   async updateUserPreference(
-    @Args('user_id') user_id: string,
+    @Args('user_id') user_id: number,
     @Args('updateUserPreferenceInput')
     updateUserPreferenceInput: UpdatePreferenceInput,
   ): Promise<UserPreference> {

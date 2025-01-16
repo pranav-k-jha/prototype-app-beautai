@@ -1,4 +1,4 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import {
   Entity,
   PrimaryColumn,
@@ -10,9 +10,9 @@ import {
 @ObjectType()
 @Entity('user_preferences')
 export class UserPreference {
-  @Field(() => String)
-  @PrimaryColumn('uuid')
-  user_id: string;
+  @Field(() => Int)
+  @PrimaryColumn('int')
+  user_id: number;
 
   @Field(() => Boolean, { nullable: true })
   @Column({ type: 'boolean', nullable: true })

@@ -1,10 +1,11 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { IsArray, IsOptional, IsBoolean, IsString } from 'class-validator';
+import { InputType, Field, Int } from '@nestjs/graphql';
+import { IsOptional, IsBoolean, IsInt } from 'class-validator';
 
 @InputType()
 export class CreateUserPreferenceInput {
-  @Field(() => String)
-  user_id: string;
+  @Field(() => Int)
+  @IsInt()
+  user_id: number;
 
   @Field(() => Boolean, { nullable: true })
   @IsOptional()

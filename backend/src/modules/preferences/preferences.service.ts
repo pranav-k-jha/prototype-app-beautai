@@ -26,7 +26,7 @@ export class PreferencesService {
     return this.preferencesRepository.save(newPreference);
   }
 
-  async findByUserId(user_id: string): Promise<UserPreference | null> {
+  async findByUserId(user_id: number): Promise<UserPreference | null> {
     const preference = await this.preferencesRepository.findOne({
       where: { user_id },
     });
@@ -46,7 +46,7 @@ export class PreferencesService {
   }
 
   async update(
-    user_id: string,
+    user_id: number,
     updatePreferenceInput: Partial<CreateUserPreferenceInput>,
   ): Promise<UserPreference> {
     const existingPreference = await this.findByUserId(user_id);
@@ -66,7 +66,7 @@ export class PreferencesService {
       return null;
     };
 
-    const updateData: Partial<UserPreference> = {
+    const updateData: DeepPartial<UserPreference> = {
       ...updatePreferenceInput,
       wellness_concerns:
         processArrayInput(updatePreferenceInput.wellness_concerns) ??
