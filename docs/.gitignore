@@ -1,0 +1,26 @@
+# LaTeX intermediate and output files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+*.dvi
+*.pdf
+
+# LaTeX editor backups and temporary files
+*.bak
+*.swp
+*~
+
+# VS Code settings and extensions
+.vscode/
+
+# TeX Live files
+texmf/
