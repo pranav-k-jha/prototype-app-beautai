@@ -1,0 +1,161 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{hyperref}  
+\usepackage{times}  
+\usepackage{fancyhdr}  
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{chronology}
+\usepackage{enumitem}
+
+
+
+\title{
+    \vspace{2cm}  
+    {\Huge\bfseries BEAUTAI MVP DEVELOPMENT MANUAL} \\
+    \vspace{1.5cm}
+    \includegraphics[width=0.25\textwidth]{logo.png} \\
+    \vspace{1.5cm}
+    {\Large\scshape Technical Documentation} \\
+    \vspace{0.5cm}
+    {\itshape Comprehensive Guide to BEAUT-AI Development} \\
+    \vspace{1.5cm}
+    {\large\bfseries Version 1.0} \\
+    \vspace{0.5cm}
+    \textcolor{gray}{\large Prepared by: BEAUT-AI Development Team} \\
+
+}
+
+\author{}
+\date{\today} 
+
+\lstdefinelanguage{SQL}{
+  keywords={CREATE, TABLE, PRIMARY, KEY, FOREIGN, REFERENCES, ON, DELETE, NOT, NULL, DEFAULT, UNIQUE, INT, VARCHAR, TIMESTAMP, TEXT, CHECK, ENUM, DECIMAL},
+  sensitive=true,
+  comment=[l]{--},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  breaklines=true,     
+}
+
+\lstdefinelanguage{GraphQL}{
+  keywords={type, enum, input, query, mutation},
+  keywordstyle=\color{blue}\bfseries,
+  sensitive=true,
+  comment=[l]{\#},
+  morecomment=[s]{"""}{"""},
+  morestring=[b]",
+  stringstyle=\color{magenta},
+  commentstyle=\color{gray}\ttfamily,
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  showstringspaces=false,
+}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{purple},
+    commentstyle=\color{gray}\ttfamily,
+    backgroundcolor=\color{white},  
+    showstringspaces=false
+}
+\renewcommand{\arraystretch}{1.5}  
+
+\begin{document}
+
+% Title Page (no page number)
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+
+% Table of Contents (no page number)
+\tableofcontents
+\thispagestyle{empty}
+
+\newpage
+
+\setcounter{page}{1}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+
+\newpage
+\section{Overview}
+\input{sections/overview.tex}
+
+% \section{Project Timeline}
+% \input{sections/project_timeline}
+
+\section{Tech Stack}
+\input{sections/tech_stack.tex}
+
+\section{Authentication \& User Management}
+\input{sections/auth_user_management.tex}
+
+\section{Business Management}
+\input{sections/business_management.tex}
+
+\section{Service Management}
+\input{sections/service_management.tex}
+
+\section{Appointment System}
+\input{sections/appointment_system}
+
+\section{Search \& Discovery}
+\input{sections/search_and_discovery.tex}
+
+\section{Basic Customer Features}
+\input{sections/basic_customer_features.tex}
+
+\section{Business Dashboard}
+\input{sections/business_dashboard.tex}
+
+\section{Community Page}
+\input{sections/community_page.tex}
+
+\section{Technical Requirements}
+\input{sections/tech_requirements.tex}
+
+\section{Database Schema and Requirements}
+\input{sections/database_requirements.tex}
+
+\section{API Specifications}
+\input{sections/api_specifications.tex}
+
+\section{Testing Strategy}
+\input{sections/testing_strategy.tex}
+
+\section{Deployment}
+\input{sections/deployment.tex}
+
+\section{Development Standards}
+\input{sections/development_standards.tex}
+
+\section{Infrastructure Details}
+\input{sections/infrastructure_details.tex}
+
+\section{Success Metrics}
+\input{sections/success_metrics.tex}
+
+\section{Compliance \& Accessibility}
+\input{sections/compliance_accessibility.tex}
+
+\section{Not Included in MVP}
+\input{sections/future_work.tex}
+
+% References
+% \input{sections/bibliography}
+
+
+
+\end{document}

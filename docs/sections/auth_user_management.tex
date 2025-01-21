@@ -1,0 +1,44 @@
+\subsection{User Authentication System}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Customer Authentication:}
+    \begin{itemize}
+        \item \textbf{JWT-based Authentication:} Implement JSON Web Tokens for secure session management, with refresh tokens for session renewal.
+        \item \textbf{Email Verification:} Use SendGrid to send verification emails upon signup, ensuring valid email addresses.
+        \item \textbf{Rate Limiting:} Add rate limiting on login attempts to prevent brute force attacks, allowing a maximum of 5 attempts per 15 minutes.
+            \item \textbf{Push Notifications:} Integrate push notifications to alert users about account activity, such as login from a new device or password changes, enhancing security and engagement.
+
+    \end{itemize}
+    
+  
+    
+    \item \textbf{Profile Management:}
+    \begin{itemize}
+        \item \textbf{Profile Picture Upload:} Integrate with AWS S3 for storing and retrieving user profile pictures.
+        \item \textbf{Contact Information Management:} Allow users to update their contact details, including phone numbers and addresses.
+        \item \textbf{Notification Preferences:} Enable users to set preferences for receiving notifications via email.
+    \end{itemize}
+    
+    \item \textbf{Security Features:}
+    \begin{itemize}
+        \item \textbf{Password Strength Requirements:} Enforce strong passwords with a minimum of 8 characters, including special characters and numbers.
+        \item \textbf{Password Hashing:} Use bcrypt for hashing passwords, ensuring secure storage.
+        \item \textbf{Session Management:} Implement token expiration and renewal mechanisms for secure session handling.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Deferred for Future Implementation}
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Business Authentication:}
+    \begin{itemize}
+        \item \textbf{Separate Authentication Flow:} Provide a simple, tailored authentication process for businesses.
+        \item \textbf{Business Verification:} Implement a basic admin approval process for business accounts.
+    \end{itemize}
+    \item \textbf{OAuth Integration:} Integration with Google and Facebook for social login.
+    \item \textbf{Multi-factor Authentication:} Provide additional security options for businesses.
+    \item \textbf{Advanced Admin Panel:} Develop a comprehensive admin interface for managing business approvals and monitoring account status.
+
+    \item \textbf{Notification Preferences via SMS:} Extend notification preferences to include SMS.
+    \item \textbf{CSRF Protection:} Use anti-CSRF tokens for cross-site request forgery prevention.
+    \item \textbf{Account Deletion:} Implement a fully compliant process for users to request account deletion in line with data protection regulations.
+\end{itemize}

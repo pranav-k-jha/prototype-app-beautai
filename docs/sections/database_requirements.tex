@@ -1,0 +1,160 @@
+\subsection{Core Database Schema}
+\begin{lstlisting}[language=SQL]
+-- Users Table
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    user_type ENUM('customer', 'business', 'admin') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP,
+    status ENUM('active', 'inactive', 'suspended') DEFAULT 'active'
+);
+
+-- Business Profiles
+CREATE TABLE businesses (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    business_name VARCHAR(255) NOT NULL,
+    description TEXT,
+    address_line1 VARCHAR(255),
+    address_line2 VARCHAR(255),
+    city VARCHAR(100),
+    state VARCHAR(100),
+    postal_code VARCHAR(20),
+    country VARCHAR(100),
+    phone VARCHAR(20),
+    email VARCHAR(255),
+    website VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Services
+CREATE TABLE services (
+    id UUID PRIMARY KEY,
+    business_id UUID REFERENCES businesses(id),
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    duration_minutes INTEGER NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    category VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--user's preferences 
+CREATE TABLE usersPreferences (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id), -- Assuming a 'users' table exists
+    service_id UUID REFERENCES services(id), -- Links preference to a specific service (optional)
+    prompt_id INTEGER, -- To identify which prompt the preference relates to (e.g., 1, 2, 3)
+    preference_value VARCHAR(255) NOT NULL, -- Stores the selected option, e.g., 'Acne and Blemishes'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+** Community page specific tables
+-- Posts Table
+CREATE TABLE posts (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id), -- User who created the post
+    business_id UUID REFERENCES business_profiles(id), -- Associated business providing the treatment
+    content TEXT NOT NULL, -- Text content of the post
+    image_url VARCHAR(255), -- Optional image URL (e.g., treatment image)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Comments Table
+CREATE TABLE comments (
+    id UUID PRIMARY KEY,
+    post_id UUID REFERENCES posts(id), -- The post the comment belongs to
+    user_id UUID REFERENCES users(id), -- User who commented
+    content TEXT NOT NULL, -- Comment text
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Likes Table
+CREATE TABLE likes (
+    id UUID PRIMARY KEY,
+    post_id UUID REFERENCES posts(id), -- The post that received the like
+    user_id UUID REFERENCES users(id), -- User who liked the post
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Post-Business Association Table
+CREATE TABLE post_business_association (
+    id UUID PRIMARY KEY,
+    post_id UUID REFERENCES posts(id),
+    business_id UUID REFERENCES business_profiles(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+\end{lstlisting}
+% -- Appointments
+% CREATE TABLE appointments (
+%     id UUID PRIMARY KEY,
+%     customer_id UUID REFERENCES users(id),
+%     service_id UUID REFERENCES services(id),
+%     staff_id UUID REFERENCES users(id),
+%     appointment_date TIMESTAMP NOT NULL,
+%     status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
+%     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+%     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+% );
+
+% -- Services
+% CREATE TABLE services (
+%     id UUID PRIMARY KEY,
+%     business_id UUID REFERENCES business_profiles(id),
+%     name VARCHAR(255) NOT NULL,
+%     description TEXT,
+%     duration_minutes INTEGER NOT NULL,
+%     price DECIMAL(10,2) NOT NULL,
+%     category VARCHAR(100),
+%     status ENUM('active', 'inactive') DEFAULT 'active',
+%     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+%     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+% );
+\subsection{Database Requirements}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{User Data Storage:}
+    \begin{itemize}
+        \item Securely store user credentials and personal information.
+        \item Implement encryption for sensitive data such as passwords and personal identifiers.
+        \item Ensure compliance with data protection regulations (e.g., GDPR, CCPA).
+    \end{itemize}
+    
+    \item \textbf{Business Profiles:}
+    \begin{itemize}
+        \item Maintain detailed profiles for each business, including contact and operational information.
+        \item Support dynamic updates to business profiles with audit trails for changes.
+        \item Enable relational mapping for businesses to their services and appointments.
+    \end{itemize}
+    
+    \item \textbf{Services Catalog:}
+    \begin{itemize}
+        \item Store comprehensive details for each service offered by businesses.
+        \item Allow for categorization and tagging of services for easy retrieval.
+        \item Implement versioning for service descriptions and pricing changes.
+    \end{itemize}
+    
+    \item \textbf{Appointment Records:}
+    \begin{itemize}
+        \item Maintain a history of all appointments, including customer and staff involvement.
+        \item Track appointment statuses and changes over time.
+        \item Provide analytics on appointment trends and utilization rates.
+    \end{itemize}
+    
+    \item \textbf{Basic Customer Records:}
+    \begin{itemize}
+        \item Store essential customer details and service history.
+        \item Enable integration with CRM systems for enhanced customer relationship management.
+        \item Support data export for reporting and analysis purposes.
+    \end{itemize}
+\end{itemize}

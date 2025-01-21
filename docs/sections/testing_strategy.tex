@@ -1,0 +1,79 @@
+\subsection{Unit Testing}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Backend Testing:}
+    \begin{itemize}
+        \item Use Jest as the primary testing framework for unit tests.
+        \item Achieve a minimum of 70\% code coverage across all modules.
+        \item Mock external services and dependencies to isolate unit tests.
+        \item Test individual functions and methods for expected behavior and edge cases.
+        \item Implement database transaction tests to ensure data integrity.
+    \end{itemize}
+    
+    \item \textbf{Frontend Testing:}
+    \begin{itemize}
+        \item Utilize React Native Testing Library for component testing.
+        \item Write tests for component rendering, state management, and event handling.
+        \item Ensure coverage for Redux actions, reducers, and selectors.
+        \item Test custom hooks and context providers for expected outcomes.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Integration Testing}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{GraphQL API Integration:}
+    \begin{itemize}
+        \item Use libraries like \texttt{Apollo Server Testing} or \texttt{GraphQL Playground} for testing GraphQL queries and mutations.
+        \item Validate request and response payloads for all GraphQL operations (queries, mutations, subscriptions).
+        \item Test authentication and authorization flows for secure GraphQL endpoints (e.g., ensuring proper token handling).
+        \item Ensure proper error handling, including GraphQL-specific errors (e.g., validation errors, permissions issues).
+        \item Verify correct response structure and data consistency according to the schema (e.g., ensuring the presence of required fields).
+        \item Test edge cases by providing invalid data inputs to ensure proper error messages and status codes.
+    \end{itemize}
+
+        \item \textbf{Database Integration:}
+    \begin{itemize}
+        \item Set up a test database environment for integration tests.
+        \item Verify data consistency and relationships across tables.
+        \item Test complex queries and data retrieval operations.
+        \item Ensure rollback of transactions in case of test failures.
+    \end{itemize}
+\end{itemize}
+    
+
+
+
+\subsection{End-to-End (E2E) Testing}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Mobile App Testing:}
+    \begin{itemize}
+        \item Use Detox or Appium for end-to-end testing of mobile applications.
+        \item Automate critical user journeys, such as login, navigation, and booking.
+        \item Test on real devices and simulators/emulators for comprehensive coverage.
+        \item Ensure cross-platform compatibility and responsive design.
+    \end{itemize}
+    
+    \item \textbf{Web Testing:}
+    \begin{itemize}
+        \item Use Cypress for end-to-end testing of web components.
+        \item Validate integration between frontend and backend components.
+        \item Ensure smooth navigation and data flow across pages.
+        \item Test for performance bottlenecks and loading times.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Continuous Testing and CI/CD Integration}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Automated Testing Pipeline:}
+    \begin{itemize}
+        \item Integrate testing suites into the CI/CD pipeline for automated execution.
+        \item Run unit and integration tests on every pull request to catch regressions early.
+        \item Schedule E2E tests to run on staging environments before deployment.
+    \end{itemize}
+    
+    \item \textbf{Reporting and Monitoring:}
+    \begin{itemize}
+        \item Generate test reports with coverage metrics and test results.
+        \item Monitor test execution times and identify slow tests for optimization.
+        \item Set up alerts for test failures to ensure quick response and resolution.
+    \end{itemize}
+\end{itemize}

@@ -1,0 +1,189 @@
+\subsection{GraphQL Schema}
+\begin{lstlisting}[language=GraphQL]
+# User Type
+type User {
+  id: ID!
+  email: String!
+  userType: UserType!
+  profile: UserProfile!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+# Business Type
+type Business {
+  id: ID!
+  name: String!
+  description: String
+  services: [Service!]!
+  team: [TeamMember!]!
+  operatingHours: [OperatingHours!]!
+  location: Location!
+}
+
+# Service Type
+type Service {
+  id: ID!
+  name: String!
+  description: String!
+  duration: Int!
+  price: Float!
+  category: Category!
+  availability: [Availability!]!
+}
+
+# Queries
+type Query {
+  getUser(id: ID!): User
+  getBusiness(id: ID!): Business
+  getService(id: ID!): Service
+  listAppointments(customerId: ID): [Appointment!]!
+}
+
+# Community Post Type
+type Post {
+  id: ID!
+  user: User!
+  business: Business
+  content: String!
+  imageUrl: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+# Comment Type
+type Comment {
+  id: ID!
+  post: Post!
+  user: User!
+  content: String!
+  createdAt: DateTime!
+}
+
+# Like Type
+type Like {
+  id: ID!
+  post: Post!
+  user: User!
+  createdAt: DateTime!
+}
+
+# Post-Business Association Type
+type PostBusinessAssociation {
+  id: ID!
+  post: Post!
+  business: Business!
+  createdAt: DateTime!
+}
+
+# Queries
+type Query {
+  getPost(id: ID!): Post
+  listPosts: [Post!]!
+  getPostComments(postId: ID!): [Comment!]!
+  getPostLikes(postId: ID!): [Like!]!
+}
+
+
+# Mutations
+type Mutation {
+  createUser(email: String!, userType: UserType!): User
+  createBusiness(name: String!, description: String): Business
+  createService(name: String!, duration: Int!, price: Float!): Service
+  createAppointment(input: CreateAppointmentInput!): Appointment
+  updateAppointmentStatus(id: ID!, status: AppointmentStatus!): Appointment
+
+** Mutations for Community Page
+  createPost(content: String!, imageUrl: String, businessId: ID): Post
+  updatePost(id: ID!, content: String, imageUrl: String): Post
+  deletePost(id: ID!): Boolean
+  
+  createComment(postId: ID!, content: String!): Comment
+  updateComment(id: ID!, content: String!): Comment
+  deleteComment(id: ID!): Boolean
+
+  createLike(postId: ID!): Like
+  deleteLike(id: ID!): Boolean
+
+  associatePostWithBusiness(postId: ID!, businessId: ID!): PostBusinessAssociation
+}
+\end{lstlisting}
+
+% # Appointment Type
+% type Appointment {
+%   id: ID!
+%   customer: User!
+%   service: Service!
+%   staff: User!
+%   appointmentDate: DateTime!
+%   status: AppointmentStatus!
+%   createdAt: DateTime!
+%   updatedAt: DateTime!
+% }
+
+% # Enums and Input Types
+% enum UserType {
+%   CUSTOMER
+%   BUSINESS
+%   ADMIN
+% }
+
+% enum AppointmentStatus {
+%   PENDING
+%   CONFIRMED
+%   COMPLETED
+%   CANCELLED
+% }
+
+% input CreateAppointmentInput {
+%   customerId: ID!
+%   serviceId: ID!
+%   staffId: ID!
+%   appointmentDate: DateTime!
+% }
+
+\subsection{API Endpoints and Operations}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{User Management:}
+    \begin{itemize}
+        \item \texttt{getUser(id: ID!)}: Retrieve user details by ID.
+        \item \texttt{createUser(email: String!, userType: UserType!)}: Create a new user with specified email and type.
+    \end{itemize}
+    
+    \item \textbf{Business Management:}
+    \begin{itemize}
+        \item \texttt{getBusiness(id: ID!)}: Fetch business details by ID.
+        \item \texttt{createBusiness(name: String!, description: String)}: Register a new business with name and description.
+    \end{itemize}
+    
+    \item \textbf{Service Management:}
+    \begin{itemize}
+        \item \texttt{getService(id: ID!)}: Get service details by ID.
+        \item \texttt{createService(name: String!, duration: Int!, price: Float!)}: Add a new service with specified details.
+    \end{itemize}
+
+    \item \textbf{Appointment Management:}
+    \begin{itemize}
+        \item \texttt{listAppointments(customerId: ID)}: List all appointments for a customer.
+        \item \texttt{createAppointment(input: CreateAppointmentInput!)}: Schedule a new appointment.
+        \item \texttt{updateAppointmentStatus(id: ID!, status: AppointmentStatus!)}: Change the status of an existing appointment.
+    \end{itemize}
+
+    \item \textbf{Community Page Management:}
+    \begin{itemize}
+        \item \texttt{getPost(id: ID!)}: Fetch a specific post by ID.
+        \item \texttt{listPosts}: Retrieve a list of all community posts.
+        \item \texttt{createPost(content: String!, imageUrl: String, businessId: ID)}: Create a new post in the community, optionally associating it with a business.
+        \item \texttt{updatePost(id: ID!, content: String, imageUrl: String)}: Update an existing post's content or image.
+        \item \texttt{deletePost(id: ID!)}: Delete a post from the community.
+
+        \item \texttt{createComment(postId: ID!, content: String!)}: Add a comment to a post.
+        \item \texttt{updateComment(id: ID!, content: String!)}: Edit an existing comment.
+        \item \texttt{deleteComment(id: ID!)}: Remove a comment from a post.
+
+        \item \texttt{createLike(postId: ID!)}: Like a post.
+        \item \texttt{deleteLike(id: ID!)}: Remove a like from a post.
+
+        \item \texttt{associatePostWithBusiness(postId: ID!, businessId: ID!)}: Link a post to a business to indicate which business provided the treatment.
+    \end{itemize}
+\end{itemize}
