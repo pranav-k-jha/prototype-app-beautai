@@ -1,19 +1,25 @@
-import { gql } from '@apollo/client';
-import { BUSINESS_FRAGMENT } from './businesses.fragments';
+import { gql } from "@apollo/client";
+import { BUSINESS_FRAGMENT } from "./businesses.fragments";
 
 // Business Mutations
 export const CREATE_BUSINESS = gql`
-  mutation CreateBusiness($createBusinessInput: CreateBusinessInput!) {
-    createNewBusiness(createBusinessInput: $createBusinessInput) {
-      ...BusinessFragment
+  mutation CreateBusiness($input: CreateBusinessInput!) {
+    createBusiness(input: $input) {
+      id
+      name
     }
   }
-  ${BUSINESS_FRAGMENT}
 `;
 
 export const UPDATE_BUSINESS = gql`
-  mutation UpdateBusiness($provider_id: Int!, $updateBusinessInput: UpdateBusinessInput!) {
-    updateExistingBusiness(provider_id: $provider_id, updateBusinessInput: $updateBusinessInput) {
+  mutation UpdateBusiness(
+    $provider_id: Int!
+    $updateBusinessInput: UpdateBusinessInput!
+  ) {
+    updateExistingBusiness(
+      provider_id: $provider_id
+      updateBusinessInput: $updateBusinessInput
+    ) {
       ...BusinessFragment
     }
   }
@@ -26,3 +32,4 @@ export const DELETE_BUSINESS = gql`
   }
 `;
 
+export default CREATE_BUSINESS;

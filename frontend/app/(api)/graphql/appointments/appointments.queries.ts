@@ -4,11 +4,11 @@ import { APPOINTMENTS_FRAGMENT } from "./appointments.fragments";
 // Appointments Queries
 export const GET_ALL_APPOINTMENTS = gql`
   query GetAllAppointments {
-    getAllAppointments {
-      ...AppointmentsFragment
+    appointments {
+      id
+      title
     }
   }
-  ${APPOINTMENTS_FRAGMENT}
 `;
 
 export const GET_APPOINTMENT_BY_ID = gql`
@@ -19,3 +19,5 @@ export const GET_APPOINTMENT_BY_ID = gql`
   }
   ${APPOINTMENTS_FRAGMENT}
 `;
+
+export default GET_ALL_APPOINTMENTS;

@@ -56,7 +56,6 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
-    // Generate username if not provided
     const generatedUsername = username || generateUsername(name);
 
     if (!name || !email || !password) {
@@ -74,7 +73,7 @@ const SignUp = () => {
         variables: {
           signupUserInput: {
             name,
-            username,
+            username: generatedUsername,
             email,
             password,
           },
@@ -86,16 +85,11 @@ const SignUp = () => {
         if (Platform.OS === "web") {
           await AsyncStorage.setItem("access_token", token);
           console.log("Token stored in AsyncStorage for web");
-          console.log("Response data:", data);
-          console.log("Token:", data?.signup?.access_token);
         } else {
           await SecureStore.setItemAsync("access_token", token);
           console.log("Token stored in SecureStore for mobile");
-          console.log("Response data:", data);
-          console.log("Token:", data?.signup?.access_token);
         }
 
-        // Proceed with navigation after successful sign-up
         router.replace("/(client)/(tabs)");
         console.log("Navigation successful.");
       } else {
@@ -104,7 +98,7 @@ const SignUp = () => {
       }
     } catch (error: any) {
       console.error("Sign-up error:", error.message || error);
-      alert("Error during sign-up.");
+      alert(error.message || "Error during sign-up.");
     }
 
     handleToggle();

@@ -14,7 +14,7 @@ import PastServiceCard from "@/components/cards/client/PastServiceCard";
 import { AntDesign } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import AppointmentsTracker from "@/components/charts/AppointmentsTracker";
-import SalesAnalytics from "@/components/charts/SalesAnalytics";
+// import SalesAnalytics from "@/components/charts/SalesAnalytics";
 
 const Home = () => {
   const userData = {
@@ -95,7 +95,7 @@ const Home = () => {
   return (
     <ThemedView style={styles.container}>
       <FlatList
-        data={["header", "appointments", "analytics", "growth"]}
+        data={["header", "appointments", "growth"]}
         renderItem={({ item }) => {
           switch (item) {
             case "header":
@@ -118,14 +118,6 @@ const Home = () => {
                   </ThemedText>
 
                   <AppointmentsTracker />
-                </View>
-              );
-            case "analytics":
-              return (
-                <View style={styles.section}>
-                  <ThemedText type="sectionHeader">sales analytics</ThemedText>
-
-                  <SalesAnalytics />
                 </View>
               );
             case "growth":

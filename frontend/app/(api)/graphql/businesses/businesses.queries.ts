@@ -1,14 +1,14 @@
-import { gql } from '@apollo/client';
-import { BUSINESS_FRAGMENT } from './businesses.fragments';
+import { gql } from "@apollo/client";
+import { BUSINESS_FRAGMENT } from "./businesses.fragments";
 
 // Business Queries
 export const GET_ALL_BUSINESSES = gql`
   query GetAllBusinesses {
-    getAllBusinesses {
-      ...BusinessFragment
+    businesses {
+      id
+      name
     }
   }
-  ${BUSINESS_FRAGMENT}
 `;
 
 export const GET_BUSINESS_BY_ID = gql`
@@ -19,3 +19,5 @@ export const GET_BUSINESS_BY_ID = gql`
   }
   ${BUSINESS_FRAGMENT}
 `;
+
+export default GET_ALL_BUSINESSES;

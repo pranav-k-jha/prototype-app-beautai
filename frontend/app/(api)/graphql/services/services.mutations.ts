@@ -1,15 +1,14 @@
-import { gql } from '@apollo/client';
-import { SERVICE_FRAGMENT } from './services.fragments';
-
+import { gql } from "@apollo/client";
+import { SERVICE_FRAGMENT } from "./services.fragments";
 
 // Service Mutations
 export const CREATE_SERVICE = gql`
-  mutation CreateService($createServicesInput: CreateServicesInput!) {
-    createService(createServicesInput: $createServicesInput) {
-      ...ServiceFragment
+  mutation CreateService($input: CreateServiceInput!) {
+    createService(input: $input) {
+      id
+      name
     }
   }
-  ${SERVICE_FRAGMENT}
 `;
 
 export const UPDATE_SERVICE = gql`
@@ -27,3 +26,4 @@ export const DELETE_SERVICE = gql`
   }
 `;
 
+export default CREATE_SERVICE;

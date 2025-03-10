@@ -1,14 +1,14 @@
-import { gql } from '@apollo/client';
-import { APPOINTMENTS_FRAGMENT } from './appointments.fragments';
+import { gql } from "@apollo/client";
+import { APPOINTMENTS_FRAGMENT } from "./appointments.fragments";
 
 // Appointments Mutations
 export const CREATE_APPOINTMENT = gql`
-  mutation CreateAppointment($createAppointmentDto: CreateAppointmentDto!) {
-    createAppointment(createAppointmentDto: $createAppointmentDto) {
-      ...AppointmentsFragment
+  mutation CreateAppointment($input: CreateAppointmentInput!) {
+    createAppointment(input: $input) {
+      id
+      title
     }
   }
-  ${APPOINTMENTS_FRAGMENT}
 `;
 
 export const UPDATE_APPOINTMENT = gql`
@@ -25,3 +25,5 @@ export const DELETE_APPOINTMENT = gql`
     removeAppointment(appointment_id: $appointment_id)
   }
 `;
+
+export default { CREATE_APPOINTMENT, UPDATE_APPOINTMENT, DELETE_APPOINTMENT };

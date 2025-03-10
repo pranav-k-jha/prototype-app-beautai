@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 // User Mutations
 
 export const SIGNUP_USER = gql`
-  mutation Signup($signupUserInput: SignupUserInput!) {
+  mutation SignupUser($signupUserInput: SignupUserInput!) {
     signup(signupUserInput: $signupUserInput) {
       access_token
       refresh_token
@@ -16,6 +16,7 @@ export const SIGNUP_USER = gql`
     }
   }
 `;
+
 export const LOGIN_USER = gql`
   mutation Login($emailOrUsername: String!, $password: String!) {
     login(
@@ -38,3 +39,5 @@ export const RESET_PASSWORD_MUTATION = gql`
     resetPassword(identifier: $identifier, newPassword: $newPassword)
   }
 `;
+
+export default SIGNUP_USER;

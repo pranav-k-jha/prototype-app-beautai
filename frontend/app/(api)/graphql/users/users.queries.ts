@@ -5,10 +5,10 @@ import { USER_FRAGMENT } from "./users.fragments";
 export const GET_USERS = gql`
   query GetUsers {
     users {
-      ...UserFragment
+      id
+      username
     }
   }
-  ${USER_FRAGMENT}
 `;
 
 export const GET_USER = gql`
@@ -19,3 +19,5 @@ export const GET_USER = gql`
   }
   ${USER_FRAGMENT}
 `;
+
+export default GET_USERS;

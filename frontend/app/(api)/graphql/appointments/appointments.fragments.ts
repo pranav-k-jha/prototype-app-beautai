@@ -1,15 +1,12 @@
-
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 // Appointments Fragment
 export const APPOINTMENTS_FRAGMENT = gql`
-  fragment AppointmentsFragment on Appointments {
-    appointment_id
-    service {
-      service_id
-      service_name
-    }
-    rating
-    user_id
+  fragment Appointments on Appointment {
+    id
+    title
+    date
   }
 `;
+
+export default APPOINTMENTS_FRAGMENT;

@@ -1,0 +1,187 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Service {
+  service_id: Int!
+  business_id: Int!
+  business: Business!
+  service_name: String!
+  invasiveness: String!
+  description: String
+  duration: Int
+  price: Float!
+  category: String
+  concerns: String
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Business {
+  business_id: Int!
+  business_name: String!
+  email: String!
+  phone_number: String!
+  address: String!
+  operating_hours: String!
+  services: [Service!]!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type User {
+  user_id: Int!
+  name: String!
+  username: String!
+  email: String!
+}
+
+type SignupResponse {
+  user_id: Float!
+  name: String!
+  username: String!
+  email: String!
+}
+
+type LoginResponse {
+  access_token: String!
+  refresh_token: String!
+  user: SignupResponse!
+}
+
+type UserPreference {
+  user_id: Int!
+  consent_to_camera: Boolean
+  face_scan_success: Boolean
+  selected_treatment: String
+  wellness_concerns: [String!]
+  aesthetic_concerns: [String!]
+  aging_concerns: [String!]
+  skin_concerns: [String!]
+  comfort_level: String
+  downtime_preference: String
+  budget_preference: String
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type Query {
+  getAllBusinesses: [Business!]!
+  getBusinessById(business_id: Int!): Business!
+  findAllServices: [Service!]!
+  findServiceById(service_id: Int!): Service!
+  users: [User!]!
+  user(identifier: String!): User!
+  getUserPreference(user_id: Float!): UserPreference
+}
+
+type Mutation {
+  createNewBusiness(createBusinessInput: CreateBusinessInput!): Business!
+  updateExistingBusiness(business_id: Int!, updateBusinessInput: UpdateBusinessInput!): Business!
+  deleteBusinessById(business_id: Int!): Boolean!
+  createService(createServicesInput: CreateServicesInput!): Service!
+  updateService(updateServicesInput: UpdateServicesInput!): Service!
+  removeService(service_id: Int!): Boolean!
+  deleteServiceById(service_id: Int!): Boolean!
+  createUser(signupUserInput: SignupUserInput!): User!
+  updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): Boolean!
+  resetPassword(identifier: String!, newPassword: String!): Boolean!
+  login(loginUserInput: LoginUserInput!): LoginResponse!
+  signup(signupUserInput: SignupUserInput!): LoginResponse!
+  refreshTokens(refreshToken: String!): LoginResponse!
+  createUserPreference(createUserPreferenceInput: CreateUserPreferenceInput!): UserPreference!
+  updateUserPreference(user_id: Float!, updateUserPreferenceInput: UpdatePreferenceInput!): UserPreference!
+}
+
+input CreateBusinessInput {
+  business_name: String!
+  email: String!
+  phone_number: String!
+  address: String!
+  operating_hours: String
+}
+
+input UpdateBusinessInput {
+  business_name: String
+  email: String
+  phone_number: String
+  address: String
+  operating_hours: String
+}
+
+input CreateServicesInput {
+  service_name: String!
+  description: String
+  price: Float!
+  duration: Int!
+  category: String!
+  invasiveness: String!
+  concerns: String!
+  business_id: Int!
+}
+
+input UpdateServicesInput {
+  service_name: String
+  description: String
+  price: Float
+  duration: Int
+  category: String
+  invasiveness: String
+  concerns: String
+  business_id: Int
+  service_id: Float!
+}
+
+input SignupUserInput {
+  name: String!
+  email: String!
+  username: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  name: String
+  username: String
+  email: String
+  password: String
+  user_id: Float!
+}
+
+input LoginUserInput {
+  emailOrUsername: String!
+  password: String!
+}
+
+input CreateUserPreferenceInput {
+  user_id: Int!
+  consent_to_camera: Boolean
+  face_scan_success: Boolean
+  selected_treatment: String
+  wellness_concerns: [String!]
+  aesthetic_concerns: [String!]
+  aging_concerns: [String!]
+  skin_concerns: [String!]
+  comfort_level: String
+  downtime_preference: String
+  budget_preference: String
+}
+
+input UpdatePreferenceInput {
+  user_id: Int
+  consent_to_camera: Boolean
+  face_scan_success: Boolean
+  selected_treatment: String
+  wellness_concerns: [String!]
+  aesthetic_concerns: [String!]
+  aging_concerns: [String!]
+  skin_concerns: [String!]
+  comfort_level: String
+  downtime_preference: String
+  budget_preference: String
+}

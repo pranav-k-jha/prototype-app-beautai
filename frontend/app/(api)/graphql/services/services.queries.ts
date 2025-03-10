@@ -1,14 +1,14 @@
-import { gql } from '@apollo/client';
-import { SERVICE_FRAGMENT } from './services.fragments';
+import { gql } from "@apollo/client";
+import { SERVICE_FRAGMENT } from "./services.fragments";
 
 // Service Queries
 export const FIND_ALL_SERVICES = gql`
   query FindAllServices {
-    findAllServices {
-      ...ServiceFragment
+    services {
+      id
+      name
     }
   }
-  ${SERVICE_FRAGMENT}
 `;
 
 export const FIND_SERVICE_BY_ID = gql`
@@ -19,3 +19,5 @@ export const FIND_SERVICE_BY_ID = gql`
   }
   ${SERVICE_FRAGMENT}
 `;
+
+export default FIND_ALL_SERVICES;
