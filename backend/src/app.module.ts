@@ -43,8 +43,7 @@ import * as Joi from 'joi';
         migrations: [
           /*...*/
         ],
-        synchronize: configService.get('NODE_ENV') === 'test', // Sync only in development environment
-        // dropSchema: configService.get('NODE_ENV') === 'development', // Drop schema only in development environment
+        synchronize: true,
         autoLoadEntities: true,
       }),
       inject: [ConfigService], // Inject ConfigService to access environment variables
